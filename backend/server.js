@@ -42,6 +42,15 @@ app.use(cors({
   ],
   credentials: true
 }));
+if (process.env.NODE_ENV === 'production') {
+  app.use('/api/uploads', express.static('/tmp/uploads'));
+  console.log('📁 Serving uploads from /tmp/uploads in production');
+} else {
+  app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
+  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+  console.log('📁 Serving uploads from local uploads directory in development');
+}
+
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(sanitizeInput);

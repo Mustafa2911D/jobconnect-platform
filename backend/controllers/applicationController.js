@@ -52,10 +52,20 @@ export const applyForJob = async (req, res) => {
       });
     }
 
+    // 🔥 FIX: Store only the filename, not the full path
+    let resumePath = req.file.filename; // Just store the filename
+    
+    // If it's a full path, extract just the filename
+    if (resumePath.includes('/')) {
+      resumePath = resumePath.split('/').pop();
+    }
+
+    console.log('📄 Resume file saved:', resumePath);
+
     const application = await Application.create({
       candidate: req.user.id,
       job: jobId,
-      resume: req.file.path,
+      resume: resumePath, // Store only filename
       coverLetter
     });
 
@@ -78,7 +88,11 @@ export const applyForJob = async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Application submitted successfully',
-      application
+      application: {
+        ...application.toObject(),
+        // 🔥 FIX: Return the accessible URL for the resume
+        resumeUrl: `/api/uploads/${resumePath}`
+      }
     });
   } catch (error) {
     console.error('Apply for job error:', error);
