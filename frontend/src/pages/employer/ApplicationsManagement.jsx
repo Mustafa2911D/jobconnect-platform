@@ -34,12 +34,19 @@ const ApplicationsManagement = () => {
   });
 
   // Helper Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return null;
+  if (imagePath.startsWith('http')) return imagePath;
+  
+  // Use production backend URL
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
+  
+  if (imagePath.startsWith('uploads/')) {
+    return `${baseUrl}/${imagePath}`;
+  }
+  
+  return `${baseUrl}/uploads/profile-images/${imagePath}`;
+};
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -230,31 +237,33 @@ const ApplicationsManagement = () => {
   };
 
   const downloadResume = (resumeUrl) => {
-    try {
-      console.log('📄 Original resume URL from database:', resumeUrl);
-      
-      let resumeFilename;
-      if (resumeUrl.includes('\\')) {
-        resumeFilename = resumeUrl.split('\\').pop();
-      } else if (resumeUrl.includes('/')) {
-        resumeFilename = resumeUrl.split('/').pop();
-      } else {
-        resumeFilename = resumeUrl;
-      }
-      
-      console.log('🔧 Extracted filename:', resumeFilename);
-      
-      // Fix the URL construction - use the correct API endpoint
-      const correctResumeUrl = `http://localhost:5000/api/uploads/${resumeFilename}`;
-      console.log('🌐 Correct resume URL:', correctResumeUrl);
-      
-      window.open(correctResumeUrl, '_blank');
-      showToast('📄 Opening resume...', 'info');
-    } catch (error) {
-      console.error('❌ Error opening resume:', error);
-      showToast('Error opening resume', 'error');
+  try {
+    console.log('📄 Original resume URL from database:', resumeUrl);
+    
+    let resumeFilename;
+    if (resumeUrl.includes('\\')) {
+      resumeFilename = resumeUrl.split('\\').pop();
+    } else if (resumeUrl.includes('/')) {
+      resumeFilename = resumeUrl.split('/').pop();
+    } else {
+      resumeFilename = resumeUrl;
     }
-  };
+    
+    console.log('🔧 Extracted filename:', resumeFilename);
+    
+    // Use production backend URL
+    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
+    const correctResumeUrl = `${baseUrl}/uploads/${resumeFilename}`;
+    
+    console.log('🌐 Correct resume URL:', correctResumeUrl);
+    
+    window.open(correctResumeUrl, '_blank');
+    showToast('📄 Opening resume...', 'info');
+  } catch (error) {
+    console.error('❌ Error opening resume:', error);
+    showToast('Error opening resume', 'error');
+  }
+};
 
   const viewCandidateProfile = (candidateId) => {
     try {

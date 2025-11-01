@@ -38,7 +38,7 @@ class SocketService {
       this.connectionAttempts++;
       console.log(`🔄 Attempting WebSocket connection (attempt ${this.connectionAttempts})...`);
       
-      this.socket = io(import.meta.env.VITE_API_URL || 'http://localhost:5000', {
+      this.socket = io(import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000', {
         auth: { 
           token 
         },

@@ -37,12 +37,7 @@ import EmployerPublicProfile from './pages/EmployerPublicProfile.jsx';
 function App() {
   return (
     <AuthProvider>
-      <Router
-        future={{
-          v7_startTransition: true,
-          v7_relativeSplatPath: true
-        }}
-      >
+      <Router>
         <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50">
           <ScrollToTop /> 
           <Header />
@@ -160,6 +155,9 @@ function App() {
                   <SavedProfiles />
                 </ProtectedRoute>
               } />
+
+              {/* Catch all route - redirect to home */}
+              <Route path="*" element={<Home />} />
             </Routes>
           </main>
           <Footer />

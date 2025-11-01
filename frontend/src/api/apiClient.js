@@ -87,7 +87,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Helper function to get image URLs (updated for production)
+// Helper function to get image URLs 
 export const getImageUrl = (imagePath) => {
   if (!imagePath) {
     return null;
@@ -97,13 +97,12 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
   
-  // In production, use the Render backend URL
+  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
+  
   if (imagePath.startsWith('uploads/')) {
-    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
     return `${baseUrl}/${imagePath}`;
   }
   
-  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000';
   return `${baseUrl}/uploads/profile-images/${imagePath}`;
 };
 
