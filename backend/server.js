@@ -33,8 +33,9 @@ connectDB();
 // ===== MIDDLEWARE SETUP =====
 app.use(cors({
   origin: [
-    process.env.FRONTEND_URL || "http://localhost:3000",
     "https://jobconnect-platform-zeta.vercel.app",
+    "https://jobconnect-platform.vercel.app", 
+    "http://localhost:3000",
     "https://*.vercel.app"
   ],
   credentials: true,
