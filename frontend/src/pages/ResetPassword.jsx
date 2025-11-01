@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft, Shield } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
+import { authAPI } from '../api/apiClient.js'; // ADD THIS IMPORT
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -85,26 +86,21 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      // Use the actual API call instead of simulation
-      const response = await fetch(`/api/auth/reset-password/${token}`, {
-        method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ password: formData.password }),
-      });
+      // 🔥 FIX: Use authAPI instead of direct fetch
+      const response = await authAPI.resetPassword(token, formData.password);
 
-      const data = await response.json();
-
-      if (data.success) {
+      if (response.data.success) {
         showToast('Password reset successfully! You can now log in with your new password.', 'success');
         setTimeout(() => navigate('/login'), 2000);
       } else {
-        showToast(data.message || 'Error resetting password', 'error');
+        showToast(response.data.message || 'Error resetting password', 'error');
       }
     } catch (error) {
       console.error('Reset password error:', error);
-      showToast('Network error. Please try again.', 'error');
+      showToast(
+        error.response?.data?.message || 'Network error. Please try again.', 
+        'error'
+      );
     } finally {
       setLoading(false);
     }

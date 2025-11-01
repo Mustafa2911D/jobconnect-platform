@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle, AlertCircle, Shield } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
+import { authAPI } from '../api/apiClient.js'; // ADD THIS IMPORT
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -20,25 +21,21 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/forgot-password', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
+      // 🔥 FIX: Use authAPI instead of direct fetch
+      const response = await authAPI.forgotPassword(email);
+      
+      if (response.data.success) {
         setSubmitted(true);
         showToast('Password reset link sent to your email', 'success');
       } else {
-        showToast(data.message || 'Error sending reset link', 'error');
+        showToast(response.data.message || 'Error sending reset link', 'error');
       }
     } catch (error) {
       console.error('Forgot password error:', error);
-      showToast('Network error. Please try again.', 'error');
+      showToast(
+        error.response?.data?.message || 'Network error. Please try again.', 
+        'error'
+      );
     } finally {
       setLoading(false);
     }
