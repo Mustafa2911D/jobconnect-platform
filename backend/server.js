@@ -52,14 +52,20 @@ const ensureUploadDirs = () => {
 ensureUploadDirs();
 
 // ===== MIDDLEWARE SETUP =====
+// 🔥 FIXED CORS CONFIGURATION
 app.use(cors({
   origin: [
     'https://jobconnect-platform-zeta.vercel.app',
     'https://jobconnect-platform.vercel.app',
     'http://localhost:3000'
   ],
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
 }));
+
+// Handle preflight requests properly
+app.options('*', cors());
 
 // 🔥 CRITICAL FIX: Serve static files correctly in production
 if (process.env.NODE_ENV === 'production') {
@@ -154,6 +160,15 @@ app.get('/api/socket-health', (req, res) => {
 // ===== ERROR HANDLING =====
 app.use((err, req, res, next) => {
   console.error('Error:', err);
+  
+  // Handle CORS errors
+  if (err.message === 'Not allowed by CORS') {
+    return res.status(403).json({
+      success: false,
+      message: 'CORS policy: Origin not allowed'
+    });
+  }
+  
   res.status(500).json({
     success: false,
     message: 'Something went wrong!',
@@ -178,4 +193,9 @@ server.listen(PORT, () => {
   console.log(`Rate limiting: ${process.env.NODE_ENV === 'production' ? 'ENABLED' : 'DISABLED'}`);
   console.log(`WebSocket server: INITIALIZED`);
   console.log(`File serving: ${process.env.NODE_ENV === 'production' ? '/tmp/uploads' : 'local uploads'}`);
+  console.log(`CORS enabled for: ${[
+    'https://jobconnect-platform-zeta.vercel.app',
+    'https://jobconnect-platform.vercel.app',
+    'http://localhost:3000'
+  ].join(', ')}`);
 });
