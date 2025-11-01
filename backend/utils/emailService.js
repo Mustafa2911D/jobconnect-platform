@@ -1,59 +1,32 @@
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 console.log('Email Configuration:', {
-  host: process.env.EMAIL_HOST,
-  port: process.env.EMAIL_PORT,
-  user: process.env.EMAIL_USER ? 'Set' : 'Not Set',
-  pass: process.env.EMAIL_PASS ? 'Set' : 'Not Set'
+  service: 'Resend',
+  apiKey: process.env.RESEND_API_KEY ? 'Set' : 'Not Set'
 });
 
-// ===== EMAIL TRANSPORTER SETUP =====
-const transporter = nodemailer.createTransport({
-  host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-  port: process.env.EMAIL_PORT || 587,
-  secure: false,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
-  },
-  tls: {
-    rejectUnauthorized: false
-  },
-  // 🔥 ADD TIMEOUT CONFIGURATION
-  connectionTimeout: 30000,
-  greetingTimeout: 30000,
-  socketTimeout: 30000
-});
-
-// Verify transporter on startup
-transporter.verify(function(error, success) {
-  if (error) {
-    console.log('❌ Email transporter error:', error);
-  } else {
-    console.log('✅ Email server is ready to take messages');
-    console.log('📧 Using email:', process.env.EMAIL_USER);
-  }
-});
+// Initialize Resend
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ===== WELCOME EMAIL =====
 export const sendWelcomeEmail = async (userEmail, userName, role) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping welcome email.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping welcome email.');
       return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: userEmail,
-      subject: 'Welcome to Job Connect - Get Started!',
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [userEmail],
+      subject: 'Welcome to JobConnect - Get Started!',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
           <div style="text-align: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 10px 10px 0 0; color: white;">
-            <h1 style="margin: 0; font-size: 28px;">🎉 Welcome to Job Connect!</h1>
+            <h1 style="margin: 0; font-size: 28px;">🎉 Welcome to JobConnect!</h1>
           </div>
           <div style="padding: 30px;">
             <h2 style="color: #333; margin-bottom: 20px;">Hello ${userName}!</h2>
@@ -94,15 +67,19 @@ export const sendWelcomeEmail = async (userEmail, userName, role) => {
             <p style="color: #999; font-size: 14px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
               If you have any questions, feel free to reply to this email.<br>
               Best regards,<br>
-              <strong>The Job Connect Team</strong>
+              <strong>The JobConnect Team</strong>
             </p>
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Welcome email sent to:', userEmail);
+    if (error) {
+      console.error('❌ Resend error sending welcome email:', error);
+      return false;
+    }
+
+    console.log('✅ Welcome email sent via Resend to:', userEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending welcome email:', error);
@@ -113,15 +90,15 @@ export const sendWelcomeEmail = async (userEmail, userName, role) => {
 // ===== PASSWORD RESET EMAIL =====
 export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping password reset email.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping password reset email.');
       return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: userEmail,
-      subject: 'Password Reset Request - Job Connect',
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [userEmail],
+      subject: 'Password Reset Request - JobConnect',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
           <div style="text-align: center; background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%); padding: 30px; border-radius: 10px 10px 0 0; color: white;">
@@ -130,7 +107,7 @@ export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
           <div style="padding: 30px;">
             <h2 style="color: #333; margin-bottom: 20px;">Hello ${userName},</h2>
             <p style="color: #666; line-height: 1.6; font-size: 16px;">
-              You requested to reset your password for your Job Connect account. 
+              You requested to reset your password for your JobConnect account. 
               Click the button below to create a new password:
             </p>
             
@@ -152,10 +129,14 @@ export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset email sent to:', userEmail);
+    if (error) {
+      console.error('❌ Resend error sending password reset email:', error);
+      return false;
+    }
+
+    console.log('✅ Password reset email sent via Resend to:', userEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending password reset email:', error);
@@ -166,15 +147,15 @@ export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
 // ===== PASSWORD RESET CONFIRMATION =====
 export const sendPasswordResetConfirmation = async (userEmail, userName) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping password reset confirmation.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping password reset confirmation.');
       return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: userEmail,
-      subject: 'Password Reset Successful - Job Connect',
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [userEmail],
+      subject: 'Password Reset Successful - JobConnect',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
           <div style="text-align: center; background: linear-gradient(135deg, #00b894 0%, #00a085 100%); padding: 30px; border-radius: 10px 10px 0 0; color: white;">
@@ -183,7 +164,7 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
           <div style="padding: 30px;">
             <h2 style="color: #333; margin-bottom: 20px;">Hello ${userName},</h2>
             <p style="color: #666; line-height: 1.6; font-size: 16px;">
-              Your Job Connect password has been successfully reset.
+              Your JobConnect password has been successfully reset.
             </p>
             
             <div style="background: #d4edda; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #28a745;">
@@ -195,15 +176,19 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
             
             <p style="color: #999; font-size: 14px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
               Best regards,<br>
-              <strong>The Job Connect Team</strong>
+              <strong>The JobConnect Team</strong>
             </p>
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password reset confirmation sent to:', userEmail);
+    if (error) {
+      console.error('❌ Resend error sending password reset confirmation:', error);
+      return false;
+    }
+
+    console.log('✅ Password reset confirmation sent via Resend to:', userEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending password reset confirmation:', error);
@@ -214,15 +199,15 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
 // ===== PASSWORD CHANGE CONFIRMATION =====
 export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping password change confirmation.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping password change confirmation.');
       return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: userEmail,
-      subject: 'Password Changed Successfully - Job Connect',
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [userEmail],
+      subject: 'Password Changed Successfully - JobConnect',
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
           <div style="text-align: center; background: linear-gradient(135deg, #0984e3 0%, #074b83 100%); padding: 30px; border-radius: 10px 10px 0 0; color: white;">
@@ -231,7 +216,7 @@ export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
           <div style="padding: 30px;">
             <h2 style="color: #333; margin-bottom: 20px;">Hello ${userName},</h2>
             <p style="color: #666; line-height: 1.6; font-size: 16px;">
-              Your Job Connect password has been successfully changed.
+              Your JobConnect password has been successfully changed.
             </p>
             
             <div style="background: #d1ecf1; padding: 20px; border-radius: 8px; margin: 25px 0; border-left: 4px solid #17a2b8;">
@@ -243,15 +228,19 @@ export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
             
             <p style="color: #999; font-size: 14px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
               Best regards,<br>
-              <strong>The Job Connect Team</strong>
+              <strong>The JobConnect Team</strong>
             </p>
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Password change confirmation sent to:', userEmail);
+    if (error) {
+      console.error('❌ Resend error sending password change confirmation:', error);
+      return false;
+    }
+
+    console.log('✅ Password change confirmation sent via Resend to:', userEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending password change confirmation:', error);
@@ -262,14 +251,14 @@ export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
 // ===== APPLICATION EMAILS =====
 export const sendApplicationConfirmation = async (candidateEmail, jobTitle, companyName) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping application confirmation.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping application confirmation.');
       return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: candidateEmail,
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [candidateEmail],
       subject: `Application Confirmation: ${jobTitle} at ${companyName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
@@ -300,10 +289,14 @@ export const sendApplicationConfirmation = async (candidateEmail, jobTitle, comp
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Application confirmation sent to:', candidateEmail);
+    if (error) {
+      console.error('❌ Resend error sending application confirmation:', error);
+      return false;
+    }
+
+    console.log('✅ Application confirmation sent via Resend to:', candidateEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending application confirmation:', error);
@@ -313,14 +306,14 @@ export const sendApplicationConfirmation = async (candidateEmail, jobTitle, comp
 
 export const sendNewApplicationNotification = async (employerEmail, candidateName, jobTitle) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping new application notification.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping new application notification.');
       return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: employerEmail,
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [employerEmail],
       subject: `New Application: ${jobTitle}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
@@ -348,15 +341,19 @@ export const sendNewApplicationNotification = async (employerEmail, candidateNam
             
             <p style="color: #999; font-size: 14px; text-align: center; border-top: 1px solid #eee; padding-top: 20px;">
               Best regards,<br>
-              <strong>Job Connect Team</strong>
+              <strong>JobConnect Team</strong>
             </p>
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ New application notification sent to:', employerEmail);
+    if (error) {
+      console.error('❌ Resend error sending new application notification:', error);
+      return false;
+    }
+
+    console.log('✅ New application notification sent via Resend to:', employerEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending new application notification:', error);
@@ -367,8 +364,8 @@ export const sendNewApplicationNotification = async (employerEmail, candidateNam
 // ===== APPLICATION STATUS NOTIFICATION =====
 export const sendApplicationStatusNotification = async (candidateEmail, candidateName, jobTitle, companyName, status, employerName) => {
   try {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-      console.warn('⚠️ Email credentials not configured. Skipping status notification.');
+    if (!process.env.RESEND_API_KEY) {
+      console.warn('⚠️ Resend API key not configured. Skipping status notification.');
       return false;
     }
 
@@ -455,9 +452,9 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         return false;
     }
 
-    const mailOptions = {
-      from: `Job Connect <${process.env.EMAIL_USER}>`,
-      to: candidateEmail,
+    const { data, error } = await resend.emails.send({
+      from: 'JobConnect <onboarding@resend.dev>',
+      to: [candidateEmail],
       subject: subject,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px;">
@@ -474,10 +471,14 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
           </div>
         </div>
       `
-    };
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log(`✅ Application ${status} notification sent to:`, candidateEmail);
+    if (error) {
+      console.error(`❌ Resend error sending application ${status} notification:`, error);
+      return false;
+    }
+
+    console.log(`✅ Application ${status} notification sent via Resend to:`, candidateEmail);
     return true;
   } catch (error) {
     console.error('❌ Error sending application status notification:', error);
