@@ -13,12 +13,26 @@ class SocketService {
       console.log('🔄 Initializing Socket.io server...');
       
       this.io = new Server(server, {
-        cors: {
-          origin: process.env.FRONTEND_URL || "http://localhost:3000",
-          methods: ["GET", "POST"],
-          credentials: true,
-          allowedHeaders: ["Authorization"]
-        },
+  cors: {
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
+      // Allow all Vercel domains and localhost
+      if (
+        origin.endsWith('.vercel.app') ||
+        origin.includes('localhost:3000') ||
+        origin.includes('jobconnect-platform')
+      ) {
+        return callback(null, true);
+      }
+      
+      return callback(new Error('Not allowed by CORS'));
+    },
+    methods: ["GET", "POST"],
+    credentials: true,
+    allowedHeaders: ["Authorization"]
+  },
         connectionStateRecovery: {
           maxDisconnectionDuration: 2 * 60 * 1000, // 2 minutes
           skipMiddlewares: true
