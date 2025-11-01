@@ -9,8 +9,17 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 15000, // Increased timeout for production
-  withCredentials: true // 🔥 ADD THIS
+  timeout: 60000,
+  withCredentials: true 
+});
+
+export const uploadClient = axios.create({
+  baseURL: API_BASE_URL,
+  timeout: 60000, // 60 seconds for uploads
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+  },
 });
 
 // Track rate limit retries
@@ -171,10 +180,10 @@ export const jobsAPI = {
 
 // Applications API methods
 export const applicationsAPI = {
-  apply: (data) => apiClient.post('/applications/apply', data, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+  apply: (data, config = {}) => uploadClient.post('/applications/apply', data, {
+    ...config,
+    timeout: 60000, 
+    onUploadProgress: config.onUploadProgress,
   }),
   getCandidateApplications: () => apiClient.get('/applications/candidate/my-applications'),
   getJobApplications: (jobId) => apiClient.get(`/applications/job/${jobId}`),

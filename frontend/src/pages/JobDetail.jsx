@@ -18,7 +18,8 @@ import {
   Star,
   Share2,
   ExternalLink,
-  Eye
+  Eye,
+  Loader // 🔥 ADD Loader icon
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
 
@@ -33,6 +34,7 @@ const JobDetail = () => {
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState('');
   const [isSticky, setIsSticky] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0); // 🔥 ADD progress state
 
   // Effects
   useEffect(() => {
@@ -70,16 +72,35 @@ const JobDetail = () => {
       return;
     }
 
+    // 🔥 ADD: File size validation
+    if (resume.size > 5 * 1024 * 1024) {
+      showToast('File size too large. Maximum 5MB allowed.', 'error');
+      return;
+    }
+
     setApplying(true);
+    setUploadProgress(0); // 🔥 Reset progress
+
     try {
       const formData = new FormData();
       formData.append('jobId', id);
       formData.append('coverLetter', coverLetter);
       formData.append('resume', resume);
 
-      await apiClient.post('/applications/apply', formData, {
+      const response = await apiClient.post('/applications/apply', formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
+        },
+        timeout: 60000, // 🔥 INCREASE timeout to 60 seconds
+        // 🔥 ADD: Upload progress tracking
+        onUploadProgress: (progressEvent) => {
+          if (progressEvent.total) {
+            const percentCompleted = Math.round(
+              (progressEvent.loaded * 100) / progressEvent.total
+            );
+            setUploadProgress(percentCompleted);
+            console.log(`Upload Progress: ${percentCompleted}%`);
+          }
         },
       });
 
@@ -87,9 +108,18 @@ const JobDetail = () => {
       showToast('Application submitted successfully!', 'success');
     } catch (error) {
       console.error('Error applying for job:', error);
-      showToast(error.response?.data?.message || 'Failed to apply for job', 'error');
+      
+      // 🔥 IMPROVED: Better error messages
+      if (error.code === 'ECONNABORTED') {
+        showToast('Upload is taking longer than expected. Please try again with a smaller file.', 'error');
+      } else if (error.response?.data?.message) {
+        showToast(error.response.data.message, 'error');
+      } else {
+        showToast('Failed to apply for job. Please try again.', 'error');
+      }
     } finally {
       setApplying(false);
+      setUploadProgress(0); // 🔥 Reset progress when done
     }
   };
 
@@ -97,8 +127,12 @@ const JobDetail = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
+    // 🔥 UPDATE: Use production backend URL
+    const baseUrl = 'https://jobconnect-backend-yyho.onrender.com';
+    if (imagePath.startsWith('uploads/')) {
+      return `${baseUrl}/${imagePath}`;
+    }
+    return `${baseUrl}/uploads/profile-images/${imagePath}`;
   };
 
   const formatSalary = (salary) => {
@@ -138,6 +172,15 @@ const JobDetail = () => {
       navigator.clipboard.writeText(window.location.href);
       showToast('Link copied to clipboard!', 'success');
     }
+  };
+
+  // 🔥 ADD: Format file size for display
+  const formatFileSize = (bytes) => {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
   };
 
   // Loading State
@@ -403,9 +446,30 @@ const JobDetail = () => {
                         <p className="text-xs text-gray-500 mt-1">
                           PDF, DOC, DOCX (Max: 5MB)
                         </p>
+                        {resume && (
+                          <p className="text-xs text-green-600 font-medium mt-1">
+                            {formatFileSize(resume.size)}
+                          </p>
+                        )}
                       </div>
                     </div>
                   </div>
+
+                  {/* 🔥 ADD: Upload Progress Bar */}
+                  {applying && uploadProgress > 0 && (
+                    <div className="space-y-2">
+                      <div className="flex justify-between text-sm text-gray-600">
+                        <span>Uploading...</span>
+                        <span>{uploadProgress}%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div 
+                          className="bg-green-600 h-2 rounded-full transition-all duration-300 ease-out"
+                          style={{ width: `${uploadProgress}%` }}
+                        ></div>
+                      </div>
+                    </div>
+                  )}
 
                   <div className="group">
                     <label className="text-sm font-medium text-gray-700 mb-3 flex items-center">
@@ -424,12 +488,12 @@ const JobDetail = () => {
                   <button
                     type="submit"
                     disabled={applying}
-                    className="btn-primary w-full py-3 text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none"
+                    className="btn-primary w-full py-3 text-lg font-semibold transition-all duration-300 hover:shadow-lg hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-none relative overflow-hidden"
                   >
                     {applying ? (
                       <div className="flex items-center justify-center">
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-3"></div>
-                        Submitting Application...
+                        <Loader className="h-5 w-5 animate-spin mr-3" />
+                        {uploadProgress === 100 ? 'Processing...' : `Uploading... ${uploadProgress}%`}
                       </div>
                     ) : (
                       'Submit Application'

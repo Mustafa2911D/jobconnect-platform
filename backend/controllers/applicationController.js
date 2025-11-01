@@ -14,6 +14,8 @@ import socketService from '../utils/socket.js';
 // ===== APPLICATION SUBMISSION =====
 export const applyForJob = async (req, res) => {
   try {
+    console.log('📨 Application request received, processing...');
+
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
@@ -32,18 +34,27 @@ export const applyForJob = async (req, res) => {
       });
     }
 
-    const job = await Job.findById(jobId);
+    // 🔥 OPTIMIZATION: Process file first, then do database operations
+    let resumePath = req.file.filename;
+    if (resumePath.includes('/')) {
+      resumePath = resumePath.split('/').pop();
+    }
+
+    console.log('📄 Resume processed:', resumePath);
+
+    // 🔥 OPTIMIZATION: Run database operations in parallel where possible
+    const [job, existingApplication, candidate] = await Promise.all([
+      Job.findById(jobId),
+      Application.findOne({ candidate: req.user.id, job: jobId }),
+      User.findById(req.user.id)
+    ]);
+
     if (!job) {
       return res.status(404).json({
         success: false,
         message: 'Job not found'
       });
     }
-
-    const existingApplication = await Application.findOne({
-      candidate: req.user.id,
-      job: jobId
-    });
 
     if (existingApplication) {
       return res.status(400).json({
@@ -52,48 +63,44 @@ export const applyForJob = async (req, res) => {
       });
     }
 
-    // 🔥 FIX: Store only the filename, not the full path
-    let resumePath = req.file.filename; // Just store the filename
-    
-    // If it's a full path, extract just the filename
-    if (resumePath.includes('/')) {
-      resumePath = resumePath.split('/').pop();
-    }
-
-    console.log('📄 Resume file saved:', resumePath);
-
+    // Create application
     const application = await Application.create({
       candidate: req.user.id,
       job: jobId,
-      resume: resumePath, // Store only filename
+      resume: resumePath,
       coverLetter
     });
 
-    await job.incrementApplication();
-
-    const candidate = await User.findById(req.user.id);
-    candidate.stats.jobApplications = (candidate.stats.jobApplications || 0) + 1;
-    await candidate.updateCareerStats();
-    await candidate.save();
-
-    const employer = await User.findById(job.employer);
-
-    try {
-      await sendApplicationConfirmation(candidate.email, job.title, job.company);
-      await sendNewApplicationNotification(employer.email, candidate.name, job.title);
-    } catch (emailError) {
-      console.error('Email sending failed:', emailError);
-    }
+    // 🔥 OPTIMIZATION: Don't wait for these to complete
+    Promise.all([
+      job.incrementApplication(),
+      (async () => {
+        candidate.stats.jobApplications = (candidate.stats.jobApplications || 0) + 1;
+        await candidate.updateCareerStats();
+        await candidate.save();
+      })(),
+      (async () => {
+        try {
+          const employer = await User.findById(job.employer);
+          await sendApplicationConfirmation(candidate.email, job.title, job.company);
+          await sendNewApplicationNotification(employer.email, candidate.name, job.title);
+        } catch (emailError) {
+          console.error('Email sending failed:', emailError);
+        }
+      })()
+    ]).catch(error => {
+      console.error('Background tasks failed:', error);
+    });
 
     res.status(201).json({
       success: true,
       message: 'Application submitted successfully',
       application: {
         ...application.toObject(),
-        // 🔥 FIX: Return the accessible URL for the resume
         resumeUrl: `/api/uploads/${resumePath}`
       }
     });
+
   } catch (error) {
     console.error('Apply for job error:', error);
     res.status(500).json({
