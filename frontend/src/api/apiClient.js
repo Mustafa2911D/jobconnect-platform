@@ -87,7 +87,7 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Helper function to get image URLs 
+// Helper function to get image URLs (updated for production)
 export const getImageUrl = (imagePath) => {
   if (!imagePath) {
     return null;
@@ -97,6 +97,7 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
   
+  // Use the production backend URL
   const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
   
   if (imagePath.startsWith('uploads/')) {

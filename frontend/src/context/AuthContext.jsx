@@ -139,18 +139,19 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Logout function
-const logout = () => {
-  // Disconnect socket first
-  socketService.disconnect();
-  
-  localStorage.removeItem('token');
-  setToken(null);
-  setUser(null);
-  setRateLimitExceeded(false);
-  delete apiClient.defaults.headers.common['Authorization'];
-  
-  window.location.replace('/login');
-};
+  const logout = () => {
+    // Disconnect socket first
+    socketService.disconnect();
+    
+    localStorage.removeItem('token');
+    setToken(null);
+    setUser(null);
+    setRateLimitExceeded(false);
+    delete apiClient.defaults.headers.common['Authorization'];
+    
+    // Use window.location.replace for better redirect
+    window.location.replace('/login');
+  };
 
   // Context value
   const value = {
