@@ -32,15 +32,22 @@ connectDB();
 
 // ===== MIDDLEWARE SETUP =====
 app.use(cors({
-  origin: [
-    "https://jobconnect-platform-zeta.vercel.app",
-    "https://jobconnect-platform.vercel.app", 
-    "http://localhost:3000",
-    "https://*.vercel.app"
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    // Allow all Vercel domains
+    if (
+      origin.endsWith('.vercel.app') ||
+      origin.includes('localhost:3000') ||
+      origin.includes('jobconnect-platform')
+    ) {
+      return callback(null, true);
+    }
+    
+    return callback(new Error('Not allowed by CORS'));
+  },
+  credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
