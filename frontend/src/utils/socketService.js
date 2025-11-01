@@ -38,7 +38,10 @@ class SocketService {
       this.connectionAttempts++;
       console.log(`🔄 Attempting WebSocket connection (attempt ${this.connectionAttempts})...`);
       
-      this.socket = io(import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'http://localhost:5000', {
+      // 🔥 FIX: Use proper WebSocket URL from environment
+      const wsUrl = import.meta.env.VITE_WS_URL || 'wss://jobconnect-backend-yyho.onrender.com';
+      
+      this.socket = io(wsUrl, {
         auth: { 
           token 
         },
@@ -46,7 +49,8 @@ class SocketService {
         timeout: 10000,
         reconnectionAttempts: 3,
         reconnectionDelay: 1000,
-        autoConnect: true
+        autoConnect: true,
+        withCredentials: true // 🔥 ADD THIS
       });
 
       this.setupEventListeners();
@@ -73,6 +77,7 @@ class SocketService {
     this.socket.on('connect', () => {
       console.log('🟢 WebSocket connected successfully');
       this.isConnected = true;
+      this.connectionAttempts = 0; // Reset on successful connection
     });
 
     this.socket.on('disconnect', (reason) => {

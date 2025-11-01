@@ -26,27 +26,20 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = createServer(app);
 
+// 🔥 CRITICAL FIX: Add trust proxy for rate limiting
+app.set('trust proxy', 1);
+
 // ===== INITIALIZATION =====
 socketService.initialize(server);
 connectDB();
 
 // ===== MIDDLEWARE SETUP =====
 app.use(cors({
-  origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
-    if (!origin) return callback(null, true);
-    
-    // Allow all Vercel domains
-    if (
-      origin.endsWith('.vercel.app') ||
-      origin.includes('localhost:3000') ||
-      origin.includes('jobconnect-platform')
-    ) {
-      return callback(null, true);
-    }
-    
-    return callback(new Error('Not allowed by CORS'));
-  },
+  origin: [
+    'https://jobconnect-platform-zeta.vercel.app',
+    'https://jobconnect-platform.vercel.app',
+    'http://localhost:3000'
+  ],
   credentials: true
 }));
 app.use(express.json({ limit: '10mb' }));

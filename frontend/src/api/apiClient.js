@@ -10,6 +10,7 @@ export const apiClient = axios.create({
     'Content-Type': 'application/json',
   },
   timeout: 15000, // Increased timeout for production
+  withCredentials: true // 🔥 ADD THIS
 });
 
 // Track rate limit retries
@@ -97,7 +98,7 @@ export const getImageUrl = (imagePath) => {
     return imagePath;
   }
   
-  // Use the production backend URL
+  // 🔥 FIX: Use the actual backend URL from environment
   const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
   
   if (imagePath.startsWith('uploads/')) {
