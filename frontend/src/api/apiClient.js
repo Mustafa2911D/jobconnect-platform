@@ -9,13 +9,13 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 60000,
+  timeout: 30000, // Reduced from 60000 to 30000ms (30 seconds)
   withCredentials: true 
 });
 
 export const uploadClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 60000, // 60 seconds for uploads
+  timeout: 30000, // 30 seconds for uploads
   withCredentials: true,
   headers: {
     'Content-Type': 'multipart/form-data',
@@ -97,22 +97,26 @@ apiClient.interceptors.response.use(
   }
 );
 
-// Helper function 
+// Helper function to get image URLs (FIXED FOR PRODUCTION)
 export const getImageUrl = (imagePath) => {
   if (!imagePath) {
     return null;
   }
   
+  // If it's already a full URL, return as-is
   if (imagePath.startsWith('http')) {
     return imagePath;
   }
   
-  const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
+  // 🔥 CRITICAL FIX: Always use production backend URL, no localhost fallback
+  const baseUrl = 'https://jobconnect-backend-yyho.onrender.com';
   
+  // Handle different image path formats
   if (imagePath.startsWith('uploads/')) {
     return `${baseUrl}/${imagePath}`;
   }
   
+  // Default to profile images path
   return `${baseUrl}/uploads/profile-images/${imagePath}`;
 };
 
@@ -181,7 +185,7 @@ export const jobsAPI = {
 export const applicationsAPI = {
   apply: (data, config = {}) => uploadClient.post('/applications/apply', data, {
     ...config,
-    timeout: 60000, 
+    timeout: 30000, 
     onUploadProgress: config.onUploadProgress,
   }),
   getCandidateApplications: () => apiClient.get('/applications/candidate/my-applications'),

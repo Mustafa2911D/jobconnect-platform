@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
+import fs from 'fs';
 import connectDB from './config/db.js';
 import { apiLimiter, authLimiter, jobApplicationLimiter, userInfoLimiter } from './middleware/rateLimit.js';
 import { sanitizeInput, sanitizeJobInput } from './middleware/sanitizeMiddleware.js';
@@ -33,6 +34,23 @@ app.set('trust proxy', 1);
 socketService.initialize(server);
 connectDB();
 
+// ===== ENSURE UPLOAD DIRECTORIES EXIST =====
+const ensureUploadDirs = () => {
+  const uploadDirs = [
+    '/tmp/uploads/profile-images',
+    path.join(__dirname, 'uploads', 'profile-images')
+  ];
+  
+  uploadDirs.forEach(dir => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+      console.log(`✅ Created upload directory: ${dir}`);
+    }
+  });
+};
+
+ensureUploadDirs();
+
 // ===== MIDDLEWARE SETUP =====
 app.use(cors({
   origin: [
@@ -42,11 +60,14 @@ app.use(cors({
   ],
   credentials: true
 }));
+
+// 🔥 CRITICAL FIX: Serve static files correctly in production
 if (process.env.NODE_ENV === 'production') {
-  app.use('/api/uploads', express.static('/tmp/uploads'));
+  // Serve from /tmp/uploads in production
+  app.use('/uploads', express.static('/tmp/uploads'));
   console.log('📁 Serving uploads from /tmp/uploads in production');
 } else {
-  app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
+  // Serve from local uploads directory in development
   app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
   console.log('📁 Serving uploads from local uploads directory in development');
 }
@@ -54,12 +75,6 @@ if (process.env.NODE_ENV === 'production') {
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(sanitizeInput);
-
-// Serve static files only in development (use cloud storage in production)
-if (process.env.NODE_ENV === 'development') {
-  app.use('/api/uploads', express.static(path.join(__dirname, 'uploads')));
-  app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-}
 
 // ===== RATE LIMITING =====
 // Enable rate limiting in production
@@ -162,4 +177,5 @@ server.listen(PORT, () => {
   console.log(`Health check: http://localhost:${PORT}/api/health`);
   console.log(`Rate limiting: ${process.env.NODE_ENV === 'production' ? 'ENABLED' : 'DISABLED'}`);
   console.log(`WebSocket server: INITIALIZED`);
+  console.log(`File serving: ${process.env.NODE_ENV === 'production' ? '/tmp/uploads' : 'local uploads'}`);
 });
