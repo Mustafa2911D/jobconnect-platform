@@ -7,7 +7,8 @@ import {
   CheckCircle, XCircle, Clock, Eye, User, Info,
   MessageCircle, ArrowUpRight, Sparkles, TrendingUp,
   Users, BarChart3, RefreshCw, Zap, Target, Award,
-  Share2, Bookmark, ExternalLink
+  Share2, Bookmark, ExternalLink,
+  MoreVertical // 🔥 ADD MoreVertical icon for mobile menu
 } from 'lucide-react';
 import { showToast } from '../../utils/toast.js';
 
@@ -24,6 +25,7 @@ const ApplicationsManagement = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [selectedApplications, setSelectedApplications] = useState(new Set());
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(null); // 🔥 ADD mobile menu state
   
   const [stats, setStats] = useState({
     total: 0,
@@ -89,6 +91,7 @@ const ApplicationsManagement = () => {
       setApplications(prev => prev.map(app => 
         app._id === applicationId ? { ...app, status } : app
       ));
+      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
     } catch (error) {
       console.error('Error updating application status:', error);
       showToast('Error updating application status', 'error');
@@ -259,6 +262,7 @@ const ApplicationsManagement = () => {
       
       window.open(correctResumeUrl, '_blank');
       showToast('📄 Opening resume...', 'info');
+      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
     } catch (error) {
       console.error('❌ Error opening resume:', error);
       showToast('Error opening resume', 'error');
@@ -270,6 +274,7 @@ const ApplicationsManagement = () => {
       navigate(`/employer/candidates/${candidateId}`);
       console.log('Opening candidate profile for ID:', candidateId);
       showToast('👤 Opening candidate profile...', 'info');
+      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
     } catch (error) {
       console.error('Error navigating to candidate profile:', error);
       showToast('Error loading candidate profile', 'error');
@@ -287,6 +292,7 @@ const ApplicationsManagement = () => {
         }
       });
       showToast(`💬 Starting conversation with ${candidateName}`, 'info');
+      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
     } catch (error) {
       console.error('Error starting conversation:', error);
       showToast('Error starting conversation', 'error');
@@ -306,6 +312,7 @@ const ApplicationsManagement = () => {
     } else {
       showToast('👤 Candidate profile already saved', 'info');
     }
+    setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
   };
 
   // Effects
@@ -509,7 +516,7 @@ const ApplicationsManagement = () => {
                   <div className={`relative bg-white border rounded-xl p-6 transition-all duration-300 transform ${
                     hoveredCard === application._id ? '-translate-y-1 shadow-xl border-green-600' : 'border-gray-200 shadow-sm'
                   }`}>
-                    <div className="flex items-start justify-between">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4"> {/* 🔥 CHANGED to flex-col on mobile */}
                       {/* Left Section - Candidate Info */}
                       <div className="flex items-start space-x-4 flex-1">
                         {/* Selection Checkbox */}
@@ -522,8 +529,8 @@ const ApplicationsManagement = () => {
                         
                         {/* Candidate Info */}
                         <div className="flex-1">
-                          <div className="flex items-start justify-between mb-4">
-                            <div className="flex items-start space-x-4">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4"> {/* 🔥 CHANGED to flex-col on mobile */}
+                            <div className="flex items-start space-x-4 mb-3 sm:mb-0"> {/* 🔥 ADD margin on mobile */}
                               <div className="relative group/avatar">
                                 <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-blue-800 rounded-xl blur opacity-0 group-hover/avatar:opacity-20 transition duration-500"></div>
                                 <div className="relative w-12 h-12 bg-gradient-to-r from-green-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-lg font-bold shadow-lg transform group-hover/avatar:scale-110 transition-transform duration-300 overflow-hidden">
@@ -547,7 +554,7 @@ const ApplicationsManagement = () => {
                               </div>
                               <div className="flex-1">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-                                  <div className="flex items-center space-x-3">
+                                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3"> {/* 🔥 CHANGED to flex-col on mobile */}
                                     <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors duration-300">
                                       {application.candidate?.name}
                                     </h3>
@@ -562,7 +569,7 @@ const ApplicationsManagement = () => {
                                 
                                 <p className="text-gray-600 mb-3 font-medium">{application.candidate?.email}</p>
                                 
-                                <div className="flex items-center space-x-4 text-sm text-gray-500 mb-4">
+                                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-500 mb-4"> {/* 🔥 CHANGED to flex-col on mobile */}
                                   <div className="flex items-center space-x-1 bg-gray-100 px-3 py-1 rounded-lg">
                                     <FileText className="h-4 w-4" />
                                     <span className="font-medium">Applied for: {application.job?.title}</span>
@@ -606,9 +613,9 @@ const ApplicationsManagement = () => {
                       </div>
 
                       {/* Right Section - Action Buttons */}
-                      <div className="flex flex-col items-end space-y-4 ml-6 min-w-[200px]">
-                        {/* Quick Action Buttons */}
-                        <div className="flex items-center space-x-2">
+                      <div className="flex flex-col items-stretch space-y-4 lg:items-end lg:ml-6 lg:min-w-[200px]"> {/* 🔥 CHANGED to items-stretch on mobile */}
+                        {/* Quick Action Buttons - Desktop */}
+                        <div className="hidden lg:flex items-center space-x-2">
                           <button
                             onClick={() => saveCandidateProfile(application.candidate)}
                             className="p-2 text-gray-400 hover:text-yellow-500 hover:bg-yellow-50 rounded-xl transition-all duration-300 transform hover:scale-110"
@@ -636,6 +643,47 @@ const ApplicationsManagement = () => {
                           </button>
                         </div>
 
+                        {/* Mobile Menu Button */}
+                        <div className="lg:hidden relative">
+                          <button
+                            onClick={() => setMobileMenuOpen(mobileMenuOpen === application._id ? null : application._id)}
+                            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-all duration-300"
+                          >
+                            <MoreVertical className="h-5 w-5" />
+                          </button>
+                          
+                          {/* Mobile Dropdown Menu */}
+                          {mobileMenuOpen === application._id && (
+                            <div className="absolute right-0 top-10 mt-2 w-48 bg-white border border-gray-200 rounded-xl shadow-lg z-10">
+                              <button
+                                onClick={() => saveCandidateProfile(application.candidate)}
+                                className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-yellow-50 flex items-center space-x-2 rounded-t-xl"
+                              >
+                                <Bookmark className="h-4 w-4" />
+                                <span>Save Profile</span>
+                              </button>
+                              <button
+                                onClick={() => startConversationWithCandidate(
+                                  application.candidate._id,
+                                  application.candidate.name,
+                                  application.candidate.email
+                                )}
+                                className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-blue-50 flex items-center space-x-2"
+                              >
+                                <MessageCircle className="h-4 w-4" />
+                                <span>Message</span>
+                              </button>
+                              <button
+                                onClick={() => viewCandidateProfile(application.candidate._id)}
+                                className="w-full px-4 py-3 text-left text-sm text-gray-700 hover:bg-green-50 flex items-center space-x-2 rounded-b-xl"
+                              >
+                                <ExternalLink className="h-4 w-4" />
+                                <span>View Profile</span>
+                              </button>
+                            </div>
+                          )}
+                        </div>
+
                         {/* Main Action Buttons */}
                         <div className="flex flex-col space-y-2 w-full">
                           <button
@@ -646,7 +694,7 @@ const ApplicationsManagement = () => {
                             <span className="font-semibold">View Resume</span>
                           </button>
                           
-                          <div className="grid grid-cols-1 gap-2">
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2"> {/* 🔥 CHANGED to 3 columns on sm screens */}
                             <button
                               onClick={() => updateApplicationStatus(application._id, 'accepted')}
                               disabled={application.status === 'accepted'}
@@ -657,7 +705,7 @@ const ApplicationsManagement = () => {
                               }`}
                             >
                               <CheckCircle className="h-4 w-4 transition-transform group-hover/accept:scale-110" />
-                              <span>Accept</span>
+                              <span className="hidden sm:inline">Accept</span> {/* 🔥 HIDE text on mobile */}
                             </button>
                             <button
                               onClick={() => updateApplicationStatus(application._id, 'rejected')}
@@ -669,7 +717,7 @@ const ApplicationsManagement = () => {
                               }`}
                             >
                               <XCircle className="h-4 w-4 transition-transform group-hover/reject:scale-110" />
-                              <span>Reject</span>
+                              <span className="hidden sm:inline">Reject</span> {/* 🔥 HIDE text on mobile */}
                             </button>
                             <button
                               onClick={() => updateApplicationStatus(application._id, 'reviewed')}
@@ -681,7 +729,7 @@ const ApplicationsManagement = () => {
                               }`}
                             >
                               <Eye className="h-4 w-4 transition-transform group-hover/review:scale-110" />
-                              <span>Mark Reviewed</span>
+                              <span className="hidden sm:inline">Reviewed</span> {/* 🔥 HIDE text on mobile */}
                             </button>
                           </div>
                         </div>

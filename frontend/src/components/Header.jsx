@@ -28,7 +28,8 @@ import {
   ChevronDown,
   Home,
   BarChart3,
-  Bookmark
+  Bookmark,
+  BookmarkCheck // 🔥 ADD BookmarkCheck icon for saved profiles
 } from 'lucide-react';
 
 // Helper function to get image URLs
@@ -675,7 +676,7 @@ const Header = () => {
                             onClick={() => setHoveredDropdown(null)}
                           />
                           <DropdownItem 
-                            icon={Bookmark} 
+                            icon={BookmarkCheck} 
                             label="Saved Profiles" 
                             href="/saved-profiles"
                             onClick={() => setHoveredDropdown(null)}
@@ -827,6 +828,30 @@ const Header = () => {
                       </span>
                     )}
                   </Link>
+
+                  {/* 🔥 ADD: Saved Jobs for Candidate in Mobile Menu */}
+                  {user?.role === 'candidate' && (
+                    <Link
+                      to="/saved-jobs"
+                      className="flex items-center space-x-3 text-gray-700 hover:text-green-600 px-4 py-3 rounded-xl hover:bg-green-600/10 transition-all duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <Bookmark className="h-5 w-5" />
+                      <span>Saved Jobs</span>
+                    </Link>
+                  )}
+
+                  {/* 🔥 ADD: Saved Profiles for Employer in Mobile Menu */}
+                  {user?.role === 'employer' && (
+                    <Link
+                      to="/saved-profiles"
+                      className="flex items-center space-x-3 text-gray-700 hover:text-green-600 px-4 py-3 rounded-xl hover:bg-green-600/10 transition-all duration-300"
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      <BookmarkCheck className="h-5 w-5" />
+                      <span>Saved Profiles</span>
+                    </Link>
+                  )}
                 </>
               )}
 
