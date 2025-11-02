@@ -1,4 +1,4 @@
-import ElasticEmail from 'elasticemail';
+import fetch from 'node-fetch';
 import dotenv from 'dotenv';
 
 dotenv.config();
@@ -8,39 +8,49 @@ console.log('Email Configuration:', {
   apiKey: process.env.ELASTICEMAIL_API_KEY ? 'Set' : 'Not Set'
 });
 
-// Initialize Elastic Email
-let elasticEmailClient;
-if (process.env.ELASTICEMAIL_API_KEY) {
-  elasticEmailClient = ElasticEmail.createClient({
-    apiKey: process.env.ELASTICEMAIL_API_KEY
-  });
-} else {
-  console.warn('⚠️ Elastic Email API key not configured. Emails will be simulated.');
-}
-
-// Helper function to send emails
+// Helper function to send emails via Elastic Email API
 const sendEmail = async (to, subject, html) => {
   try {
     // If Elastic Email isn't configured, simulate sending
-    if (!elasticEmailClient) {
+    if (!process.env.ELASTICEMAIL_API_KEY) {
       console.log('📧 SIMULATED EMAIL:', { to, subject });
       return { success: true, simulated: true };
     }
 
-    const result = await elasticEmailClient.email.send({
-      from: 'noreply@jobconnect-platform.com',
-      fromName: 'JobConnect South Africa',
-      to: to,
-      subject: subject,
-      bodyHtml: html,
-      bodyText: html.replace(/<[^>]*>/g, '').replace(/\n{3,}/g, '\n\n').trim()
+    const formData = new URLSearchParams();
+    formData.append('apikey', process.env.ELASTICEMAIL_API_KEY);
+    formData.append('from', 'noreply@jobconnect-platform.com');
+    formData.append('fromName', 'JobConnect South Africa');
+    formData.append('to', to);
+    formData.append('subject', subject);
+    formData.append('bodyHtml', html);
+    formData.append('bodyText', html.replace(/<[^>]*>/g, '').replace(/\n{3,}/g, '\n\n').trim());
+    formData.append('isTransactional', 'true');
+
+    const response = await fetch('https://api.elasticemail.com/v2/email/send', {
+      method: 'POST',
+      body: formData,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
     });
 
-    console.log('✅ Email sent successfully via Elastic Email to:', to);
-    return { success: true, data: result };
+    const result = await response.json();
+    
+    if (result.success) {
+      console.log('✅ Email sent successfully via Elastic Email to:', to);
+      return { success: true, data: result };
+    } else {
+      console.error('❌ Elastic Email API error:', result);
+      return { 
+        success: false, 
+        error: result.error || 'Unknown Elastic Email error',
+        simulated: false
+      };
+    }
     
   } catch (error) {
-    console.error('❌ Elastic Email error:', error);
+    console.error('❌ Elastic Email network error:', error);
     return { 
       success: false, 
       error: error.message,
