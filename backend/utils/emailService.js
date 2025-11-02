@@ -78,7 +78,7 @@ const sendEmail = async (to, subject, html) => {
   }
 };
 
-// Enhanced base email template with better contrast and visibility
+// Enhanced base email template with dark mode support and improved headers
 const getBaseTemplate = (content, options = {}) => {
   const { 
     preheader = '', 
@@ -86,7 +86,8 @@ const getBaseTemplate = (content, options = {}) => {
     accentColor = '#2563eb',
     headerGradient = 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
     icon = '💼',
-    pattern = 'geometric'
+    pattern = 'geometric',
+    headerStyle = 'default'
   } = options;
   
   const patterns = {
@@ -114,7 +115,55 @@ const getBaseTemplate = (content, options = {}) => {
         radial-gradient(circle at 0% 50%, rgba(255,255,255,0.05) 20%, transparent 21%);
       background-size: 40px 40px;
     `,
+    grid: `
+      background-image: 
+        linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px);
+      background-size: 20px 20px;
+    `,
     none: ''
+  };
+
+  const headerStyles = {
+    default: `
+      background: ${headerGradient};
+      padding: 50px 40px 40px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      ${patterns[pattern]}
+    `,
+    modern: `
+      background: ${headerGradient};
+      padding: 60px 40px 50px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+      ${patterns[pattern]}
+    `,
+    elegant: `
+      background: ${headerGradient};
+      padding: 50px 40px 40px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 4px solid rgba(255,255,255,0.2);
+      ${patterns[pattern]}
+    `,
+    bold: `
+      background: ${headerGradient};
+      padding: 50px 40px;
+      text-align: center;
+      color: white;
+      position: relative;
+      overflow: hidden;
+      border-radius: 0 0 30px 30px;
+      ${patterns[pattern]}
+    `
   };
 
   return `
@@ -123,6 +172,8 @@ const getBaseTemplate = (content, options = {}) => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
+    <meta name="supported-color-schemes" content="light dark">
     <title>JobConnect Email</title>
     <style>
         * {
@@ -140,6 +191,67 @@ const getBaseTemplate = (content, options = {}) => {
             padding: 20px;
         }
         
+        @media (prefers-color-scheme: dark) {
+            body {
+                background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+                color: #e2e8f0;
+            }
+            
+            .email-wrapper {
+                background: #1e293b;
+                border-color: #334155;
+                box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3), 0 10px 10px -5px rgba(0, 0, 0, 0.2);
+            }
+            
+            .email-body {
+                background: #1e293b;
+            }
+            
+            .greeting {
+                color: #f1f5f9;
+                border-bottom-color: ${accentColor}40;
+            }
+            
+            .content-section p {
+                color: #cbd5e1;
+            }
+            
+            .feature-card {
+                background: linear-gradient(135deg, #334155 0%, #475569 100%);
+                border-color: #475569;
+                color: #e2e8f0;
+            }
+            
+            .feature-card h3 {
+                color: #f1f5f9;
+            }
+            
+            .feature-card li {
+                color: #e2e8f0;
+                border-bottom-color: #475569;
+            }
+            
+            .security-alert {
+                background: linear-gradient(135deg, #7f1d1d 0%, #991b1b 100%);
+                border-color: #dc2626;
+                color: #fecaca;
+            }
+            
+            .security-alert h3 {
+                color: #fecaca;
+            }
+            
+            .success-highlight {
+                background: linear-gradient(135deg, #14532d 0%, #166534 100%);
+                border-color: #16a34a;
+                color: #bbf7d0;
+            }
+            
+            .success-highlight h3 {
+                color: #bbf7d0;
+            }
+        }
+        
         .email-wrapper {
             max-width: 600px;
             margin: 0 auto;
@@ -151,13 +263,7 @@ const getBaseTemplate = (content, options = {}) => {
         }
         
         .email-header {
-            background: ${headerGradient};
-            padding: 50px 40px 40px;
-            text-align: center;
-            color: white;
-            position: relative;
-            overflow: hidden;
-            ${patterns[pattern]}
+            ${headerStyles[headerStyle] || headerStyles.default}
         }
         
         .email-header::before {
@@ -529,7 +635,8 @@ export const sendWelcomeEmail = async (userEmail, userName, role) => {
     headerGradient: isCandidate 
       ? 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' 
       : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    pattern: isCandidate ? 'waves' : 'geometric'
+    pattern: isCandidate ? 'waves' : 'geometric',
+    headerStyle: 'modern'
   });
 
   const result = await sendEmail(userEmail, subject, html);
@@ -571,7 +678,8 @@ export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
     icon: '🔐',
     accentColor: '#dc2626',
     headerGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
-    pattern: 'grid'
+    pattern: 'grid',
+    headerStyle: 'bold'
   });
 
   const result = await sendEmail(userEmail, subject, html);
@@ -612,7 +720,8 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
     icon: '✅',
     accentColor: '#059669',
     headerGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-    pattern: 'lines'
+    pattern: 'lines',
+    headerStyle: 'elegant'
   });
 
   const result = await sendEmail(userEmail, subject, html);
@@ -653,7 +762,8 @@ export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
     icon: '🔒',
     accentColor: '#2563eb',
     headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-    pattern: 'geometric'
+    pattern: 'geometric',
+    headerStyle: 'modern'
   });
 
   const result = await sendEmail(userEmail, subject, html);
@@ -694,7 +804,8 @@ export const sendApplicationConfirmation = async (candidateEmail, jobTitle, comp
     icon: '📨',
     accentColor: '#3b82f6',
     headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-    pattern: 'dots'
+    pattern: 'dots',
+    headerStyle: 'elegant'
   });
 
   const result = await sendEmail(candidateEmail, subject, html);
@@ -735,7 +846,8 @@ export const sendNewApplicationNotification = async (employerEmail, candidateNam
     icon: '🌟',
     accentColor: '#f59e0b',
     headerGradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
-    pattern: 'grid'
+    pattern: 'grid',
+    headerStyle: 'modern'
   });
 
   const result = await sendEmail(employerEmail, subject, html);
@@ -753,7 +865,8 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         icon: '🎊',
         accentColor: '#059669',
         headerGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-        pattern: 'waves'
+        pattern: 'waves',
+        headerStyle: 'modern'
       };
       content = `
         <div class="greeting">Outstanding News, ${candidateName}! 🎉</div>
@@ -790,7 +903,8 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         icon: '💫',
         accentColor: '#6b7280',
         headerGradient: 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)',
-        pattern: 'lines'
+        pattern: 'lines',
+        headerStyle: 'elegant'
       };
       content = `
         <div class="greeting">Dear ${candidateName},</div>
@@ -827,7 +941,8 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         icon: '📊',
         accentColor: '#3b82f6',
         headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
-        pattern: 'geometric'
+        pattern: 'geometric',
+        headerStyle: 'modern'
       };
       content = `
         <div class="greeting">Progress Update, ${candidateName}! 📈</div>
