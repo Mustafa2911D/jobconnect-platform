@@ -862,7 +862,9 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
     case 'accepted':
       subject = `Congratulations! You're Moving Forward: ${jobTitle} at ${companyName}`;
       designConfig = {
-        icon: '🎊',
+        title: 'Application Accepted!',
+        preheader: 'Great news about your job application',
+        icon: '🎉',
         accentColor: '#059669',
         headerGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
         pattern: 'waves',
@@ -900,9 +902,11 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
     case 'rejected':
       subject = `Update on Your Application: ${jobTitle} at ${companyName}`;
       designConfig = {
-        icon: '💫',
-        accentColor: '#6b7280',
-        headerGradient: 'linear-gradient(135deg, #9ca3af 0%, #6b7280 100%)',
+        title: 'Application Status Update',
+        preheader: 'Important update regarding your application',
+        icon: '❌',
+        accentColor: '#dc2626',
+        headerGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
         pattern: 'lines',
         headerStyle: 'elegant'
       };
@@ -938,7 +942,9 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
     case 'reviewed':
       subject = `Great News! Your Application is Being Actively Reviewed: ${jobTitle}`;
       designConfig = {
-        icon: '📊',
+        title: 'Application Under Review',
+        preheader: 'Your application is progressing to the next stage',
+        icon: '👀',
         accentColor: '#3b82f6',
         headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
         pattern: 'geometric',
@@ -975,11 +981,7 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
       return false;
   }
 
-  const html = getBaseTemplate(content, {
-    title: 'Application Status Update',
-    preheader: `Important update regarding ${jobTitle}`,
-    ...designConfig
-  });
+  const html = getBaseTemplate(content, designConfig);
 
   const result = await sendEmail(candidateEmail, subject, html);
   return result.success;
