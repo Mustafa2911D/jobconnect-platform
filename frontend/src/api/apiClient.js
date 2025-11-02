@@ -334,4 +334,4 @@ export const messagesAPI = {
   getAvailableUsers: () => apiClient.get('/messages/users'),
   searchUsers: (query) => apiClient.get(`/messages/users?search=${encodeURIComponent(query)}`),
   getUsers: () => apiClient.get('/messages/users')
-};
+};// Force redeploy: Remove localhost image URLs Sun, Nov  2, 2025 10:49:31 AM
