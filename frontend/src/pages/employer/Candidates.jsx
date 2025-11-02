@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, Link } from 'react-router-dom';
 import { showToast } from '../../utils/toast.js';
+import getImageUrl from '../../utils/imageUrl';
 
 const Candidates = () => {
   const { user } = useAuth();
@@ -31,14 +32,6 @@ const Candidates = () => {
     minMatchScore: 0,
     experience: ''
   });
-
-  // Helper Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   const getSkillName = (skill) => {
     if (typeof skill === 'string') return skill;

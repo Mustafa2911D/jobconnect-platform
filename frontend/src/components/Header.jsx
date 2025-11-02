@@ -29,25 +29,9 @@ import {
   Home,
   BarChart3,
   Bookmark,
-  BookmarkCheck // 🔥 ADD BookmarkCheck icon for saved profiles
+  BookmarkCheck 
 } from 'lucide-react';
-
-// Helper function to get image URLs
-const getImageUrl = (imagePath) => {
-  if (!imagePath) {
-    return null;
-  }
-  
-  if (imagePath.startsWith('http')) {
-    return imagePath;
-  }
-  
-  if (imagePath.startsWith('uploads/')) {
-    return `http://localhost:5000/${imagePath}`;
-  }
-  
-  return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-};
+import getImageUrl from '../utils/imageUrl';
 
 const Header = () => {
   const { user, logout, isAuthenticated } = useAuth();

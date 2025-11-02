@@ -8,6 +8,7 @@ import {
   Phone, Globe, Flag, Crown, Sparkles, Lightbulb, ArrowRight,
   Upload, Eye, EyeOff, Lock, Unlock, BadgeCheck, Calendar
 } from 'lucide-react';
+import getImageUrl from '../utils/imageUrl';
 
 const Profile = () => {
   const { user, updateUser, refreshUserProfile } = useAuth();
@@ -128,13 +129,6 @@ const Profile = () => {
     
     setProfileStrength(Math.min(score, 100));
     setStrengthBreakdown(breakdown);
-  };
-
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
   };
 
   const getStrengthColor = (strength) => {

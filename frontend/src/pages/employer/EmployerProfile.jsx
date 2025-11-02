@@ -9,6 +9,7 @@ import {
   Camera, Edit3, Users2, TrendingDown, Trash2, ArrowRight
 } from 'lucide-react';
 import { showToast } from '../../utils/toast.js';
+import getImageUrl from '../../utils/imageUrl';
 
 // Constants
 const industries = [
@@ -99,23 +100,6 @@ const EmployerProfile = () => {
   useEffect(() => {
     fetchCompanyData();
   }, []);
-
-  // Helper Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) {
-      return null;
-    }
-    
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    
-    if (imagePath.startsWith('uploads/')) {
-      return `http://localhost:5000/${imagePath}`;
-    }
-    
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   // API Functions
   const fetchCompanyData = async () => {

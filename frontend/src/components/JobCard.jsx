@@ -18,6 +18,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
+import getImageUrl from '../utils/imageUrl';
 
 const JobCard = ({ job }) => {
   const { user, isAuthenticated } = useAuth();
@@ -25,23 +26,6 @@ const JobCard = ({ job }) => {
   const [loading, setLoading] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
   const [imageError, setImageError] = useState(false);
-
-  // Helper functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) {
-      return null;
-    }
-    
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    
-    if (imagePath.startsWith('uploads/')) {
-      return `http://localhost:5000/${imagePath}`;
-    }
-    
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Recently';

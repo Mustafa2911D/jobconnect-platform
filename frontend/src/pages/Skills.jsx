@@ -9,6 +9,7 @@ import {
   Code, Palette, Database, Cloud, Server, Smartphone, Cpu,
   Search, Filter, Award as AwardIcon, Brain, Heart
 } from 'lucide-react';
+import getImageUrl from '../../utils/imageUrl';
 
 const Skills = () => {
   const { user, updateUser } = useAuth();
@@ -145,14 +146,6 @@ const Skills = () => {
     } finally {
       setSaving(false);
     }
-  };
-
-  // Utility Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
   };
 
   const showToast = (message, type = 'success') => {

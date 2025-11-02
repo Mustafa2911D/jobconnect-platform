@@ -9,6 +9,7 @@ import {
   X, ArrowRight, Sparkles, Lightbulb, Crown, Bookmark, Trophy,
   Medal, FileText, Globe, Users, Shield
 } from 'lucide-react';
+import getImageUrl from '../utils/imageUrl';
 
 // Constants and Configuration
 const qualificationTypes = [
@@ -47,23 +48,6 @@ const navigationItems = [
   { key: 'skills', label: 'Skills & Expertise', icon: BookOpen, href: '/skills' },
   { key: 'settings', label: 'Account Settings', icon: Settings, href: '/settings' },
 ];
-
-// Helper Functions
-const getImageUrl = (imagePath) => {
-  if (!imagePath) {
-    return null;
-  }
-  
-  if (imagePath.startsWith('http')) {
-    return imagePath;
-  }
-  
-  if (imagePath.startsWith('uploads/')) {
-    return `http://localhost:5000/${imagePath}`;
-  }
-  
-  return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-};
 
 const getQualificationColor = (type) => {
   const colors = {

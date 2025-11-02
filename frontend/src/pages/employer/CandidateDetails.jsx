@@ -11,6 +11,7 @@ import {
   Save
 } from 'lucide-react';
 import { showToast } from '../../utils/toast.js';
+import getImageUrl from '../../utils/imageUrl';
 
 const CandidateDetails = () => {
   const { candidateId } = useParams();
@@ -23,14 +24,6 @@ const CandidateDetails = () => {
   const [activeTab, setActiveTab] = useState('overview');
   const [hoveredCard, setHoveredCard] = useState(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
-
-  // Helper Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {

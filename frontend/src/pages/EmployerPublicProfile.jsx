@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
 import JobCard from '../components/JobCard.jsx';
+import getImageUrl from '../../utils/imageUrl';
 
 const EmployerPublicProfile = () => {
   const { employerId } = useParams();
@@ -36,14 +37,7 @@ const EmployerPublicProfile = () => {
       setLoading(false);
     }
   };
-
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
-
+  
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);

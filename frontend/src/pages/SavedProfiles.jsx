@@ -9,6 +9,7 @@ import {
   RefreshCw, Bookmark, ExternalLink
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
+import getImageUrl from '../../utils/imageUrl';
 
 const SavedProfiles = () => {
   const { user } = useAuth();
@@ -56,14 +57,6 @@ const SavedProfiles = () => {
       console.error('Error removing saved profile:', error);
       showToast('Error removing profile', 'error');
     }
-  };
-
-  // Utility Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
   };
 
   const filterProfiles = () => {

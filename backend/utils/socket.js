@@ -13,21 +13,22 @@ class SocketService {
       console.log('🔄 Initializing Socket.io server...');
       
       this.io = new Server(server, {
-        cors: {
-          origin: [
-            'https://jobconnect-platform-zeta.vercel.app',
-            'https://jobconnect-platform.vercel.app',
-            'http://localhost:3000'
-          ],
-          methods: ["GET", "POST"],
-          credentials: true,
-          allowedHeaders: ["Authorization", "Content-Type"]
-        },
-        connectionStateRecovery: {
-          maxDisconnectionDuration: 2 * 60 * 1000,
-          skipMiddlewares: true
-        }
-      });
+  cors: {
+    origin: [
+      'https://jobconnect-platform-zeta.vercel.app',
+      'https://jobconnect-platform.vercel.app',
+      'http://localhost:3000'
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    credentials: true,
+    allowedHeaders: ["Authorization", "Content-Type", "X-Requested-With"]
+  },
+  transports: ['websocket', 'polling'], // 🔥 ADD THIS
+  connectionStateRecovery: {
+    maxDisconnectionDuration: 2 * 60 * 1000,
+    skipMiddlewares: true
+  }
+});
 
       this.io.use(this.authenticateSocket.bind(this));
       this.io.on('connection', this.handleConnection.bind(this));

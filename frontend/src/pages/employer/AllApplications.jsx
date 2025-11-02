@@ -10,6 +10,7 @@ import {
   AlertTriangle, Check, Info
 } from 'lucide-react';
 import { showToast } from '../../utils/toast.js';
+import getImageUrl from '../../utils/imageUrl';
 
 const MyJobPosts = () => {
   const { user } = useAuth();
@@ -32,14 +33,6 @@ const MyJobPosts = () => {
     applications: 0,
     views: 0
   });
-
-  // Helper Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   const getStatusIcon = (status) => {
     switch (status) {

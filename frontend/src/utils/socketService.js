@@ -39,7 +39,7 @@ class SocketService {
       console.log(`🔄 Attempting WebSocket connection (attempt ${this.connectionAttempts})...`);
       
       // 🔥 FIX: Use proper WebSocket URL from environment
-      const wsUrl = import.meta.env.VITE_WS_URL || 'wss://jobconnect-backend-yyho.onrender.com';
+      const wsUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '').replace('http', 'ws') || 'wss://jobconnect-backend-yyho.onrender.com';
       
       this.socket = io(wsUrl, {
         auth: { 

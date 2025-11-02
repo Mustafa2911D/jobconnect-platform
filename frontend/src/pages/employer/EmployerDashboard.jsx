@@ -10,6 +10,7 @@ import {
   UserCheck, Calendar, TrendingDown, Circle, ExternalLink
 } from 'lucide-react';
 import { showToast } from '../../utils/toast.js';
+import getImageUrl from '../../utils/imageUrl';
 
 // Constants
 const quickActions = [
@@ -96,23 +97,6 @@ const EmployerDashboard = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
-
-  // Helper Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) {
-      return null;
-    }
-    
-    if (imagePath.startsWith('http')) {
-      return imagePath;
-    }
-    
-    if (imagePath.startsWith('uploads/')) {
-      return `http://localhost:5000/${imagePath}`;
-    }
-    
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   // Data Processing Functions
   const getApplicationStatusCounts = () => {

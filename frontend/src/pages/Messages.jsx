@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
 import socketService from '../utils/socketService.js';
+import getImageUrl from '../../utils/imageUrl';
 
 const Messages = () => {
   // Authentication & Routing
@@ -49,14 +50,6 @@ const Messages = () => {
   const messagesContainerRef = useRef(null);
   const fileInputRef = useRef(null);
   const isProcessingNavigationRef = useRef(false);
-
-  // Utility Functions
-  const getImageUrl = (imagePath) => {
-    if (!imagePath) return null;
-    if (imagePath.startsWith('http')) return imagePath;
-    if (imagePath.startsWith('uploads/')) return `http://localhost:5000/${imagePath}`;
-    return `http://localhost:5000/uploads/profile-images/${imagePath}`;
-  };
 
   // Effects - Screen Size & Responsive Behavior
   useEffect(() => {
