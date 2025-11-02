@@ -1,56 +1,46 @@
-import fetch from 'node-fetch';
+import brevo from '@getbrevo/brevo';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 console.log('Email Configuration:', {
-  service: 'Elastic Email',
-  apiKey: process.env.ELASTICEMAIL_API_KEY ? 'Set' : 'Not Set'
+  service: 'Brevo (Sendinblue)',
+  apiKey: process.env.BREVO_API_KEY ? 'Set' : 'Not Set'
 });
 
-// Helper function to send emails via Elastic Email API
+// Initialize Brevo
+let defaultClient = brevo.ApiClient.instance;
+let apiKey = defaultClient.authentications['api-key'];
+apiKey.apiKey = process.env.BREVO_API_KEY;
+
+let apiInstance = new brevo.TransactionalEmailsApi();
+
+// Helper function to send emails
 const sendEmail = async (to, subject, html) => {
   try {
-    // If Elastic Email isn't configured, simulate sending
-    if (!process.env.ELASTICEMAIL_API_KEY) {
+    // If Brevo isn't configured, simulate sending
+    if (!process.env.BREVO_API_KEY) {
       console.log('📧 SIMULATED EMAIL:', { to, subject });
       return { success: true, simulated: true };
     }
 
-    const formData = new URLSearchParams();
-    formData.append('apikey', process.env.ELASTICEMAIL_API_KEY);
-    formData.append('from', 'noreply@jobconnect-platform.com');
-    formData.append('fromName', 'JobConnect South Africa');
-    formData.append('to', to);
-    formData.append('subject', subject);
-    formData.append('bodyHtml', html);
-    formData.append('bodyText', html.replace(/<[^>]*>/g, '').replace(/\n{3,}/g, '\n\n').trim());
-    formData.append('isTransactional', 'true');
-
-    const response = await fetch('https://api.elasticemail.com/v2/email/send', {
-      method: 'POST',
-      body: formData,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    });
-
-    const result = await response.json();
+    let sendSmtpEmail = new brevo.SendSmtpEmail();
     
-    if (result.success) {
-      console.log('✅ Email sent successfully via Elastic Email to:', to);
-      return { success: true, data: result };
-    } else {
-      console.error('❌ Elastic Email API error:', result);
-      return { 
-        success: false, 
-        error: result.error || 'Unknown Elastic Email error',
-        simulated: false
-      };
-    }
+    sendSmtpEmail.subject = subject;
+    sendSmtpEmail.htmlContent = html;
+    sendSmtpEmail.sender = {
+      name: 'JobConnect South Africa',
+      email: 'noreply@jobconnect-platform.com'
+    };
+    sendSmtpEmail.to = [{ email: to, name: to.split('@')[0] }];
+    
+    const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
+    
+    console.log('✅ Email sent successfully via Brevo to:', to);
+    return { success: true, data: result };
     
   } catch (error) {
-    console.error('❌ Elastic Email network error:', error);
+    console.error('❌ Brevo API error:', error);
     return { 
       success: false, 
       error: error.message,
