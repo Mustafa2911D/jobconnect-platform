@@ -84,11 +84,14 @@ const getBaseTemplate = (content, options = {}) => {
     preheader = '', 
     designType = 'default',
     accentColor = '#2563eb',
-    headerGradient = 'linear-gradient(135deg, #2563eb 0%, #1e40af 100%)',
+    headerColor = '#2563eb',
     icon = '💼',
     pattern = 'geometric',
     headerStyle = 'default'
   } = options;
+  
+  // Ensure header uses the accent color as background
+  const headerGradient = `linear-gradient(135deg, ${headerColor} 0%, ${headerColor}dd 100%)`;
   
   const patterns = {
     geometric: `
@@ -632,9 +635,7 @@ export const sendWelcomeEmail = async (userEmail, userName, role) => {
     preheader: `Your ${isCandidate ? 'dream career' : 'perfect team'} journey begins now`,
     icon: isCandidate ? '🎓' : '🏢',
     accentColor: isCandidate ? '#7c3aed' : '#059669',
-    headerGradient: isCandidate 
-      ? 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)' 
-      : 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    headerColor: isCandidate ? '#7c3aed' : '#059669', // Purple for candidates, Green for employers
     pattern: isCandidate ? 'waves' : 'geometric',
     headerStyle: 'modern'
   });
@@ -677,7 +678,7 @@ export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
     preheader: 'Secure your account access - Action required',
     icon: '🔐',
     accentColor: '#dc2626',
-    headerGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+    headerColor: '#dc2626', // Red for security/urgent
     pattern: 'grid',
     headerStyle: 'bold'
   });
@@ -719,7 +720,7 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
     preheader: 'Your account security has been successfully restored',
     icon: '✅',
     accentColor: '#059669',
-    headerGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+    headerColor: '#059669', // Green for success
     pattern: 'lines',
     headerStyle: 'elegant'
   });
@@ -761,7 +762,7 @@ export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
     preheader: 'Your account security has been enhanced',
     icon: '🔒',
     accentColor: '#2563eb',
-    headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+    headerColor: '#2563eb', // Blue for informational
     pattern: 'geometric',
     headerStyle: 'modern'
   });
@@ -803,7 +804,7 @@ export const sendApplicationConfirmation = async (candidateEmail, jobTitle, comp
     preheader: `Your journey with ${companyName} begins now`,
     icon: '📨',
     accentColor: '#3b82f6',
-    headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+    headerColor: '#3b82f6', // Blue for informational
     pattern: 'dots',
     headerStyle: 'elegant'
   });
@@ -845,7 +846,7 @@ export const sendNewApplicationNotification = async (employerEmail, candidateNam
     preheader: `Fresh talent for ${jobTitle} - Review now`,
     icon: '🌟',
     accentColor: '#f59e0b',
-    headerGradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+    headerColor: '#f59e0b', // Orange/yellow for alerts/notifications
     pattern: 'grid',
     headerStyle: 'modern'
   });
@@ -866,7 +867,7 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         preheader: 'Great news about your job application',
         icon: '🎉',
         accentColor: '#059669',
-        headerGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+        headerColor: '#059669', // Green for success/acceptance
         pattern: 'waves',
         headerStyle: 'modern'
       };
@@ -906,7 +907,7 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         preheader: 'Important update regarding your application',
         icon: '❌',
         accentColor: '#dc2626',
-        headerGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+        headerColor: '#dc2626', // Red for rejection/bad news
         pattern: 'lines',
         headerStyle: 'elegant'
       };
@@ -946,7 +947,7 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
         preheader: 'Your application is progressing to the next stage',
         icon: '👀',
         accentColor: '#3b82f6',
-        headerGradient: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)',
+        headerColor: '#3b82f6', // Blue for informational/in-progress
         pattern: 'geometric',
         headerStyle: 'modern'
       };
