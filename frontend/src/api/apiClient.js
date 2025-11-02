@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Use environment variable for base URL
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://jobconnect-backend-yyho.onrender.com/api';
 
 // Axios client configuration
 export const apiClient = axios.create({
