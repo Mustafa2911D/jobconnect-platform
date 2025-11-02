@@ -553,6 +553,51 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
   return result.success;
 };
 
+// ===== PASSWORD CHANGE CONFIRMATION =====
+export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
+  const subject = 'Password Updated Successfully - JobConnect';
+  
+  const content = `
+    <div class="greeting">Security Settings Updated, ${userName} 🔐</div>
+    
+    <div class="content-section">
+      <p>This email confirms that your JobConnect account password has been successfully updated and secured.</p>
+    </div>
+    
+    <div class="success-highlight">
+      <h3>✅ Password Change Confirmed</h3>
+      <p>Your new password is now active across all devices and sessions. You will be required to use these updated credentials for all future sign-ins to your account.</p>
+    </div>
+    
+    <div class="content-section">
+      <p>For security purposes, this change has been logged in our system. All existing sessions have been terminated to ensure your account remains protected.</p>
+    </div>
+    
+    <div class="security-alert">
+      <h3>🔒 Important Security Note</h3>
+      <p>If you did not make this password change, please contact our support team immediately so we can help secure your account.</p>
+    </div>
+    
+    <div class="button-center">
+      <a href="${EMAIL_CONFIG.company.website}/security" class="action-button">
+        Review Account Security
+      </a>
+    </div>
+  `;
+
+  const html = getBaseTemplate(content, {
+    title: 'Password Updated',
+    preheader: 'Your account security has been enhanced',
+    icon: '🔒',
+    accentColor: '#2563eb',
+    headerGradient: 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)',
+    pattern: 'grid'
+  });
+
+  const result = await sendEmail(userEmail, subject, html);
+  return result.success;
+};
+
 // ===== APPLICATION CONFIRMATION =====
 export const sendApplicationConfirmation = async (candidateEmail, jobTitle, companyName) => {
   const subject = `Application Confirmed: ${jobTitle} - ${companyName}`;
