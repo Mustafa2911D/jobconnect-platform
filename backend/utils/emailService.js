@@ -1,55 +1,46 @@
-import nodemailer from 'nodemailer';
+import ElasticEmail from 'elasticemail';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
 console.log('Email Configuration:', {
-  service: 'Gmail SMTP',
-  email: process.env.EMAIL_USER ? 'Set' : 'Not Set'
+  service: 'Elastic Email',
+  apiKey: process.env.ELASTICEMAIL_API_KEY ? 'Set' : 'Not Set'
 });
 
-// Create Gmail transporter
-let transporter;
-if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
-  transporter = nodemailer.createTransport({
-    host: process.env.EMAIL_HOST || 'smtp.gmail.com',
-    port: process.env.EMAIL_PORT || 587,
-    secure: false,
-    auth: {
-      user: process.env.EMAIL_USER,
-      pass: process.env.EMAIL_PASS
-    }
+// Initialize Elastic Email
+let elasticEmailClient;
+if (process.env.ELASTICEMAIL_API_KEY) {
+  elasticEmailClient = ElasticEmail.createClient({
+    apiKey: process.env.ELASTICEMAIL_API_KEY
   });
 } else {
-  console.warn('⚠️ Gmail credentials not configured. Emails will be simulated.');
+  console.warn('⚠️ Elastic Email API key not configured. Emails will be simulated.');
 }
 
 // Helper function to send emails
 const sendEmail = async (to, subject, html) => {
   try {
-    // If Gmail isn't configured, simulate sending
-    if (!transporter) {
+    // If Elastic Email isn't configured, simulate sending
+    if (!elasticEmailClient) {
       console.log('📧 SIMULATED EMAIL:', { to, subject });
       return { success: true, simulated: true };
     }
 
-    const mailOptions = {
-      from: {
-        name: 'JobConnect South Africa',
-        address: process.env.EMAIL_USER
-      },
+    const result = await elasticEmailClient.email.send({
+      from: 'noreply@jobconnect-platform.com',
+      fromName: 'JobConnect South Africa',
       to: to,
       subject: subject,
-      html: html,
-      text: html.replace(/<[^>]*>/g, '').replace(/\n{3,}/g, '\n\n').trim()
-    };
+      bodyHtml: html,
+      bodyText: html.replace(/<[^>]*>/g, '').replace(/\n{3,}/g, '\n\n').trim()
+    });
 
-    const result = await transporter.sendMail(mailOptions);
-    console.log('✅ Email sent successfully via Gmail to:', to);
+    console.log('✅ Email sent successfully via Elastic Email to:', to);
     return { success: true, data: result };
     
   } catch (error) {
-    console.error('❌ Gmail SMTP error:', error);
+    console.error('❌ Elastic Email error:', error);
     return { 
       success: false, 
       error: error.message,
