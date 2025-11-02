@@ -19,34 +19,53 @@ if (process.env.BREVO_API_KEY) {
 // Helper function to send emails
 const sendEmail = async (to, subject, html) => {
   try {
-    // If Brevo isn't configured, simulate sending
     if (!process.env.BREVO_API_KEY) {
       console.log('📧 SIMULATED EMAIL:', { to, subject });
       return { success: true, simulated: true };
     }
 
-    const sendSmtpEmail = new brevo.SendSmtpEmail();
-    
-    sendSmtpEmail.subject = subject;
-    sendSmtpEmail.htmlContent = html;
-    sendSmtpEmail.sender = {
-      name: 'JobConnect South Africa',
-      email: 'noreply@jobconnect-platform.com'
+    const emailData = {
+      sender: {
+        name: 'JobConnect South Africa',
+        email: 'hireconnectapp8@gmail.com' // ← Use your verified email
+      },
+      to: [{ email: to }],
+      subject: subject,
+      htmlContent: html
     };
-    sendSmtpEmail.to = [{ email: to }];
+
+    console.log('📤 Attempting to send email via Brevo API to:', to);
     
-    const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
+    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
+      method: 'POST',
+      headers: {
+        'accept': 'application/json',
+        'content-type': 'application/json',
+        'api-key': process.env.BREVO_API_KEY
+      },
+      body: JSON.stringify(emailData)
+    });
+
+    const responseData = await response.json();
     
-    console.log('✅ Email sent successfully via Brevo to:', to);
-    return { success: true, data: result };
+    if (response.ok) {
+      console.log('✅ Email sent successfully!');
+      console.log('📨 Message ID:', responseData.messageId);
+      console.log('👤 From:', emailData.sender.email);
+      return { success: true, data: responseData };
+    } else {
+      console.error('❌ Brevo API error:', responseData);
+      console.error('📊 Status code:', response.status);
+      return { 
+        success: false, 
+        error: responseData.message,
+        status: response.status
+      };
+    }
     
   } catch (error) {
-    console.error('❌ Brevo API error:', error);
-    return { 
-      success: false, 
-      error: error.message,
-      simulated: false
-    };
+    console.error('❌ Network error:', error);
+    return { success: false, error: error.message };
   }
 };
 
