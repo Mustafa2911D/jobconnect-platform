@@ -9,7 +9,7 @@ import {
   Code, Palette, Database, Cloud, Server, Smartphone, Cpu,
   Search, Filter, Award as AwardIcon, Brain, Heart
 } from 'lucide-react';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl from '../utils/imageUrl';
 
 const Skills = () => {
   const { user, updateUser } = useAuth();

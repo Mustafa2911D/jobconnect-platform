@@ -8,7 +8,7 @@ import {
   ChevronRight, Building, Clock, Target, TrendingUp, CheckCircle,
   X, ArrowRight, Sparkles, Lightbulb, Crown, Award as AwardIcon
 } from 'lucide-react';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl from '../utils/imageUrl';
 
 const Experience = () => {
   const { user, updateUser } = useAuth();

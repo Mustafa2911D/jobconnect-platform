@@ -9,7 +9,7 @@ import {
   RefreshCw, Bookmark, ExternalLink
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl from '../utils/imageUrl';
 
 const SavedProfiles = () => {
   const { user } = useAuth();

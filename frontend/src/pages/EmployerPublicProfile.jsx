@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
 import JobCard from '../components/JobCard.jsx';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl from '../utils/imageUrl';
 
 const EmployerPublicProfile = () => {
   const { employerId } = useParams();

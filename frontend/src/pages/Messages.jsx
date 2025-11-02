@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
 import socketService from '../utils/socketService.js';
-import getImageUrl from '../../utils/imageUrl';
+import getImageUrl from '../utils/imageUrl';
 
 const Messages = () => {
   // Authentication & Routing
