@@ -16,14 +16,14 @@ if (process.env.BREVO_API_KEY) {
   apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 }
 
-// Base email template with elegant styling
-const baseEmailTemplate = (content, headerColor = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)') => `
+// Base email template with professional styling
+const baseEmailTemplate = (content, headerColor = '#2563eb') => `
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JobConnect</title>
+    <title>JobConnect Email</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
         
@@ -51,7 +51,7 @@ const baseEmailTemplate = (content, headerColor = 'linear-gradient(135deg, #667e
         }
         
         .email-header {
-            background: ${headerColor};
+            background: linear-gradient(135deg, ${headerColor}, ${headerColor}dd);
             padding: 40px 30px;
             text-align: center;
             color: white;
@@ -61,7 +61,7 @@ const baseEmailTemplate = (content, headerColor = 'linear-gradient(135deg, #667e
             font-size: 28px;
             font-weight: 700;
             margin-bottom: 8px;
-            letter-spacing: -0.5px;
+            letter-spacing: -0.025em;
         }
         
         .email-header .icon {
@@ -75,137 +75,87 @@ const baseEmailTemplate = (content, headerColor = 'linear-gradient(135deg, #667e
         }
         
         .greeting {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 600;
             color: #111827;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
         
         .content {
             color: #6b7280;
             font-size: 16px;
             line-height: 1.7;
-            margin-bottom: 24px;
+            margin-bottom: 32px;
         }
         
-        .highlight-box {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            border: 1px solid #e2e8f0;
+        .content strong {
+            color: #111827;
+            font-weight: 600;
+        }
+        
+        .info-box {
+            background: #f8fafc;
             border-radius: 12px;
             padding: 24px;
             margin: 32px 0;
-            border-left: 4px solid #667eea;
+            border-left: 4px solid ${headerColor};
         }
         
-        .highlight-box.success {
-            border-left-color: #10b981;
-            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
-        }
-        
-        .highlight-box.warning {
-            border-left-color: #f59e0b;
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-        }
-        
-        .highlight-box.info {
-            border-left-color: #3b82f6;
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-        }
-        
-        .highlight-title {
+        .info-box h3 {
+            color: #111827;
             font-size: 18px;
             font-weight: 600;
-            color: #111827;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 16px;
         }
         
-        .action-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 32px;
-            text-decoration: none;
-            border-radius: 10px;
-            font-weight: 600;
-            font-size: 16px;
-            text-align: center;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-        
-        .action-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
-        }
-        
-        .action-button.danger {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
-        }
-        
-        .action-button.success {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
-        }
-        
-        .steps-list {
+        .info-box ul {
             list-style: none;
             padding: 0;
         }
         
-        .steps-list li {
-            padding: 12px 0;
-            border-bottom: 1px solid #f1f5f9;
-            display: flex;
-            align-items: flex-start;
-            gap: 12px;
-        }
-        
-        .steps-list li:last-child {
-            border-bottom: none;
-        }
-        
-        .step-icon {
-            background: #667eea;
-            color: white;
-            width: 24px;
-            height: 24px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 12px;
-            font-weight: 600;
-            flex-shrink: 0;
-            margin-top: 2px;
-        }
-        
-        .step-content {
-            flex: 1;
-        }
-        
-        .step-title {
-            font-weight: 600;
-            color: #111827;
-            margin-bottom: 4px;
-        }
-        
-        .step-description {
+        .info-box li {
+            padding: 8px 0;
             color: #6b7280;
-            font-size: 14px;
+            position: relative;
+            padding-left: 24px;
         }
         
-        .text-center {
+        .info-box li:before {
+            content: "•";
+            color: ${headerColor};
+            font-weight: bold;
+            position: absolute;
+            left: 8px;
+        }
+        
+        .button-container {
             text-align: center;
+            margin: 32px 0;
         }
         
-        .footer {
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, ${headerColor}, ${headerColor}dd);
+            color: white;
+            padding: 14px 32px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.3);
+        }
+        
+        .email-footer {
+            text-align: center;
+            padding: 32px 30px;
+            background: #f8fafc;
             border-top: 1px solid #e5e7eb;
-            padding: 24px 30px;
-            text-align: center;
             color: #9ca3af;
             font-size: 14px;
         }
@@ -213,21 +163,42 @@ const baseEmailTemplate = (content, headerColor = 'linear-gradient(135deg, #667e
         .footer-logo {
             font-size: 20px;
             font-weight: 700;
-            color: #667eea;
-            margin-bottom: 8px;
+            color: #2563eb;
+            margin-bottom: 16px;
+        }
+        
+        .security-notice {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 24px 0;
+            color: #dc2626;
+            font-size: 14px;
+        }
+        
+        .success-notice {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+            padding: 16px;
+            margin: 24px 0;
+            color: #16a34a;
+            font-size: 14px;
         }
         
         @media (max-width: 600px) {
-            .email-body {
-                padding: 30px 20px;
-            }
-            
-            .email-header {
+            .email-header, .email-body, .email-footer {
                 padding: 30px 20px;
             }
             
             .email-header h1 {
                 font-size: 24px;
+            }
+            
+            .cta-button {
+                padding: 12px 24px;
+                font-size: 14px;
             }
         }
     </style>
@@ -235,32 +206,25 @@ const baseEmailTemplate = (content, headerColor = 'linear-gradient(135deg, #667e
 <body>
     <div class="email-container">
         <div class="email-header">
-            <span class="icon">${content.icon || '💼'}</span>
-            <h1>${content.title}</h1>
-            ${content.subtitle ? `<p style="opacity: 0.9; font-size: 16px; margin-top: 8px;">${content.subtitle}</p>` : ''}
+            <span class="icon">{{ICON}}</span>
+            <h1>{{TITLE}}</h1>
         </div>
         
         <div class="email-body">
-            <h2 class="greeting">Hello ${content.userName},</h2>
-            <div class="content">${content.message}</div>
-            
-            ${content.highlightBox || ''}
-            ${content.steps || ''}
-            ${content.button ? `
-            <div class="text-center" style="margin: 32px 0;">
-                <a href="${content.button.url}" class="action-button ${content.button.variant || ''}">
-                    ${content.button.text}
-                </a>
+            <div class="greeting">Hello {{USERNAME}},</div>
+            <div class="content">
+                {{CONTENT}}
             </div>
-            ` : ''}
+            {{ACTION_BUTTON}}
+            {{INFO_BOX}}
         </div>
         
-        <div class="footer">
+        <div class="email-footer">
             <div class="footer-logo">JobConnect</div>
             <p>Connecting Talent with Opportunity Across South Africa</p>
-            <p style="margin-top: 8px; font-size: 12px; opacity: 0.7;">
+            <p style="margin-top: 12px; font-size: 12px;">
                 If you have any questions, feel free to reply to this email.<br>
-                &copy; 2025 JobConnect. All rights reserved.
+                © 2024 JobConnect South Africa. All rights reserved.
             </p>
         </div>
     </div>
@@ -325,95 +289,45 @@ const sendEmail = async (to, subject, html) => {
 export const sendWelcomeEmail = async (userEmail, userName, role) => {
   const subject = `Welcome to JobConnect, ${userName}! 🎉`;
   
-  const isCandidate = role === 'candidate';
-  const roleSpecificContent = isCandidate ? {
-    steps: `
-      <div class="highlight-box info">
-        <h3 class="highlight-title">🚀 Launch Your Job Search</h3>
-        <ul class="steps-list">
-          <li>
-            <div class="step-icon">1</div>
-            <div class="step-content">
-              <div class="step-title">Complete Your Profile</div>
-              <div class="step-description">Showcase your skills, experience, and career aspirations</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">2</div>
-            <div class="step-content">
-              <div class="step-title">Upload Your Resume</div>
-              <div class="step-description">Make it easy for top employers to discover you</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">3</div>
-            <div class="step-content">
-              <div class="step-title">Browse Opportunities</div>
-              <div class="step-description">Explore jobs that match your skills and interests</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">4</div>
-            <div class="step-content">
-              <div class="step-title">Set Job Alerts</div>
-              <div class="step-description">Get notified about new relevant positions</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    `,
-    message: `Welcome to South Africa's premier job platform! We're thrilled to have you join our community of talented professionals. As a <strong>candidate</strong>, you're now connected to thousands of opportunities from top employers across the country.`
-  } : {
-    steps: `
-      <div class="highlight-box info">
-        <h3 class="highlight-title">🏢 Build Your Dream Team</h3>
-        <ul class="steps-list">
-          <li>
-            <div class="step-icon">1</div>
-            <div class="step-content">
-              <div class="step-title">Complete Company Profile</div>
-              <div class="step-description">Showcase your company culture and values</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">2</div>
-            <div class="step-content">
-              <div class="step-title">Post Your First Job</div>
-              <div class="step-description">Attract qualified candidates with compelling listings</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">3</div>
-            <div class="step-content">
-              <div class="step-title">Review Applications</div>
-              <div class="step-description">Find the perfect fit for your team with our smart matching</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">4</div>
-            <div class="step-content">
-              <div class="step-title">Connect with Talent</div>
-              <div class="step-description">Schedule interviews and build your dream team</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    `,
-    message: `Welcome to South Africa's premier hiring platform! We're excited to help you find exceptional talent for your organization. As an <strong>employer</strong>, you now have access to thousands of qualified professionals ready to contribute to your success.`
-  };
+  const roleSpecificContent = role === 'candidate' ? `
+    <p>We're thrilled to welcome you to JobConnect South Africa! As a <strong>candidate</strong>, you've taken the first step toward finding your dream career opportunity.</p>
+    
+    <div class="info-box">
+      <h3>🚀 Your Journey Starts Here</h3>
+      <ul>
+        <li><strong>Complete your profile</strong> - Showcase your skills, experience, and education to stand out</li>
+        <li><strong>Upload your resume</strong> - Make it easy for top employers to discover you</li>
+        <li><strong>Browse opportunities</strong> - Explore positions that match your expertise and aspirations</li>
+        <li><strong>Set job alerts</strong> - Get notified about new relevant positions automatically</li>
+      </ul>
+    </div>
+  ` : `
+    <p>Welcome to JobConnect South Africa! As an <strong>employer</strong>, you're now connected to our pool of exceptional talent ready to drive your business forward.</p>
+    
+    <div class="info-box">
+      <h3>🏢 Build Your Dream Team</h3>
+      <ul>
+        <li><strong>Complete company profile</strong> - Showcase your culture and attract the right talent</li>
+        <li><strong>Post job opportunities</strong> - Reach qualified candidates across South Africa</li>
+        <li><strong>Review applications</strong> - Access detailed candidate profiles and resumes</li>
+        <li><strong>Connect directly</strong> - Build relationships with potential team members</li>
+      </ul>
+    </div>
+  `;
 
-  const html = baseEmailTemplate({
-    icon: '✨',
-    title: 'Welcome to JobConnect',
-    subtitle: 'Your journey to amazing opportunities starts here',
-    userName: userName,
-    message: roleSpecificContent.message,
-    steps: roleSpecificContent.steps,
-    button: {
-      text: 'Explore Dashboard',
-      url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}`
-    }
-  });
+  const html = baseEmailTemplate
+    .replace('{{ICON}}', '🎯')
+    .replace('{{TITLE}}', 'Welcome to JobConnect!')
+    .replace('{{USERNAME}}', userName)
+    .replace('{{CONTENT}}', roleSpecificContent)
+    .replace('{{ACTION_BUTTON}}', `
+      <div class="button-container">
+        <a href="${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}" class="cta-button">
+          Explore Your Dashboard
+        </a>
+      </div>
+    `)
+    .replace('{{INFO_BOX}}', '');
 
   const result = await sendEmail(userEmail, subject, html);
   return result.success;
@@ -423,24 +337,30 @@ export const sendWelcomeEmail = async (userEmail, userName, role) => {
 export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
   const subject = 'Reset Your JobConnect Password';
   
-  const html = baseEmailTemplate({
-    icon: '🔒',
-    title: 'Password Reset',
-    subtitle: 'Secure your account access',
-    userName: userName,
-    message: `You've requested to reset your password for your JobConnect account. This is a standard security procedure to ensure your account remains protected.`,
-    highlightBox: `
-      <div class="highlight-box warning">
-        <h3 class="highlight-title">⏰ Important Security Notice</h3>
-        <p>This password reset link will expire in <strong>10 minutes</strong> for your security. If you didn't request this reset, please ignore this email and ensure your account credentials are secure.</p>
+  const cleanResetURL = resetURL.replace('//reset-password', '/reset-password');
+  
+  const html = baseEmailTemplate
+    .replace('{{ICON}}', '🔒')
+    .replace('{{TITLE}}', 'Password Reset')
+    .replace('{{USERNAME}}', userName)
+    .replace('{{CONTENT}}', `
+      <p>We received a request to reset your JobConnect account password. Click the button below to create a new secure password.</p>
+    `)
+    .replace('{{ACTION_BUTTON}}', `
+      <div class="button-container">
+        <a href="${cleanResetURL}" class="cta-button">
+          Reset Your Password
+        </a>
       </div>
-    `,
-    button: {
-      text: 'Reset Password',
-      url: resetURL,
-      variant: 'danger'
-    }
-  }, 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)');
+      <p style="text-align: center; color: #6b7280; font-size: 14px; margin-top: 16px;">
+        This link will expire in <strong>10 minutes</strong> for security reasons.
+      </p>
+    `)
+    .replace('{{INFO_BOX}}', `
+      <div class="security-notice">
+        <strong>Security Notice:</strong> If you didn't request this password reset, please ignore this email. Your account remains secure.
+      </div>
+    `);
 
   const result = await sendEmail(userEmail, subject, html);
   return result.success;
@@ -450,24 +370,25 @@ export const sendPasswordResetEmail = async (userEmail, userName, resetURL) => {
 export const sendPasswordResetConfirmation = async (userEmail, userName) => {
   const subject = 'Password Successfully Reset';
   
-  const html = baseEmailTemplate({
-    icon: '✅',
-    title: 'Password Updated',
-    subtitle: 'Your security is our priority',
-    userName: userName,
-    message: `Your JobConnect password has been successfully reset. You can now sign in to your account using your new password.`,
-    highlightBox: `
-      <div class="highlight-box success">
-        <h3 class="highlight-title">🔒 Security Confirmed</h3>
-        <p>Your account security has been successfully updated. If you did not make this change, please contact our support team immediately.</p>
+  const html = baseEmailTemplate
+    .replace('{{ICON}}', '✅')
+    .replace('{{TITLE}}', 'Password Updated')
+    .replace('{{USERNAME}}', userName)
+    .replace('{{CONTENT}}', `
+      <p>Your JobConnect password has been successfully reset. You can now sign in with your new password.</p>
+    `)
+    .replace('{{ACTION_BUTTON}}', `
+      <div class="button-container">
+        <a href="${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/login" class="cta-button">
+          Sign In to Your Account
+        </a>
       </div>
-    `,
-    button: {
-      text: 'Sign In to Account',
-      url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/login`,
-      variant: 'success'
-    }
-  }, 'linear-gradient(135deg, #10b981 0%, #059669 100%)');
+    `)
+    .replace('{{INFO_BOX}}', `
+      <div class="security-notice">
+        <strong>Important:</strong> If you did not make this change, please contact our support team immediately.
+      </div>
+    `);
 
   const result = await sendEmail(userEmail, subject, html);
   return result.success;
@@ -475,26 +396,21 @@ export const sendPasswordResetConfirmation = async (userEmail, userName) => {
 
 // ===== PASSWORD CHANGE CONFIRMATION =====
 export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
-  const subject = 'Password Changed Successfully';
+  const subject = 'Password Updated Successfully';
   
-  const html = baseEmailTemplate({
-    icon: '🔐',
-    title: 'Password Updated',
-    subtitle: 'Security settings confirmed',
-    userName: userName,
-    message: `Your JobConnect password has been successfully changed. You'll need to use your new password for all future sign-ins.`,
-    highlightBox: `
-      <div class="highlight-box info">
-        <h3 class="highlight-title">ℹ️ Important Note</h3>
-        <p>For security reasons, you'll be automatically signed out of all other devices. You'll need to sign in again with your new password.</p>
+  const html = baseEmailTemplate
+    .replace('{{ICON}}', '🔐')
+    .replace('{{TITLE}}', 'Password Changed')
+    .replace('{{USERNAME}}', userName)
+    .replace('{{CONTENT}}', `
+      <p>Your JobConnect password has been successfully updated. You'll need to use your new password for future sign-ins.</p>
+    `)
+    .replace('{{ACTION_BUTTON}}', '')
+    .replace('{{INFO_BOX}}', `
+      <div class="success-notice">
+        <strong>Note:</strong> For security reasons, you've been signed out of all other devices. Please sign in again with your new password.
       </div>
-    `,
-    button: {
-      text: 'Access Your Account',
-      url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}`,
-      variant: 'success'
-    }
-  }, 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)');
+    `);
 
   const result = await sendEmail(userEmail, subject, html);
   return result.success;
@@ -502,54 +418,33 @@ export const sendPasswordChangeConfirmation = async (userEmail, userName) => {
 
 // ===== APPLICATION CONFIRMATION =====
 export const sendApplicationConfirmation = async (candidateEmail, jobTitle, companyName) => {
-  const subject = `Application Submitted: ${jobTitle} at ${companyName}`;
+  const subject = `Application Confirmed: ${jobTitle} at ${companyName}`;
   
-  const html = baseEmailTemplate({
-    icon: '📨',
-    title: 'Application Received',
-    subtitle: 'Your journey begins here',
-    userName: '',
-    message: `Thank you for applying for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>. Your application has been received successfully and is now under review.`,
-    steps: `
-      <div class="highlight-box">
-        <h3 class="highlight-title">📋 What Happens Next?</h3>
-        <ul class="steps-list">
-          <li>
-            <div class="step-icon">1</div>
-            <div class="step-content">
-              <div class="step-title">Application Review</div>
-              <div class="step-description">The employer will carefully review your application</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">2</div>
-            <div class="step-content">
-              <div class="step-title">Shortlisting Process</div>
-              <div class="step-description">You'll be notified if you're selected for the next stage</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">3</div>
-            <div class="step-content">
-              <div class="step-title">Interview Stage</div>
-              <div class="step-description">Potential interviews or assessments may follow</div>
-            </div>
-          </li>
-          <li>
-            <div class="step-icon">4</div>
-            <div class="step-content">
-              <div class="step-title">Final Decision</div>
-              <div class="step-description">Keep an eye on your email for updates</div>
-            </div>
-          </li>
+  const html = baseEmailTemplate
+    .replace('{{ICON}}', '📨')
+    .replace('{{TITLE}}', 'Application Submitted')
+    .replace('{{USERNAME}}', '')
+    .replace('{{CONTENT}}', `
+      <p>Thank you for applying for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>. Your application has been received successfully.</p>
+    `)
+    .replace('{{ACTION_BUTTON}}', `
+      <div class="button-container">
+        <a href="${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/jobs" class="cta-button">
+          Browse More Opportunities
+        </a>
+      </div>
+    `)
+    .replace('{{INFO_BOX}}', `
+      <div class="info-box">
+        <h3>📋 What Happens Next?</h3>
+        <ul>
+          <li>The employer will review your application carefully</li>
+          <li>You'll be notified via email if you're shortlisted</li>
+          <li>Keep your profile updated for better opportunities</li>
+          <li>Continue exploring other positions that match your skills</li>
         </ul>
       </div>
-    `,
-    button: {
-      text: 'Browse More Jobs',
-      url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/jobs`
-    }
-  });
+    `);
 
   const result = await sendEmail(candidateEmail, subject, html);
   return result.success;
@@ -559,27 +454,28 @@ export const sendApplicationConfirmation = async (candidateEmail, jobTitle, comp
 export const sendNewApplicationNotification = async (employerEmail, candidateName, jobTitle) => {
   const subject = `New Application: ${jobTitle}`;
   
-  const html = baseEmailTemplate({
-    icon: '🎯',
-    title: 'New Candidate Application',
-    subtitle: 'Great talent awaits your review',
-    userName: '',
-    message: `You have a new candidate application for your job posting: <strong>${jobTitle}</strong>.`,
-    highlightBox: `
-      <div class="highlight-box info">
-        <h3 class="highlight-title">👤 Candidate Profile</h3>
-        <div style="padding: 16px; background: white; border-radius: 8px; margin-top: 12px;">
-          <p style="margin: 8px 0;"><strong>Applicant Name:</strong> ${candidateName}</p>
-          <p style="margin: 8px 0;"><strong>Position Applied:</strong> ${jobTitle}</p>
-          <p style="margin: 8px 0;"><strong>Application Date:</strong> ${new Date().toLocaleDateString('en-ZA')}</p>
-        </div>
+  const html = baseEmailTemplate
+    .replace('{{ICON}}', '👤')
+    .replace('{{TITLE}}', 'New Candidate Application')
+    .replace('{{USERNAME}}', '')
+    .replace('{{CONTENT}}', `
+      <p>You have received a new application for your job posting: <strong>${jobTitle}</strong>.</p>
+    `)
+    .replace('{{ACTION_BUTTON}}', `
+      <div class="button-container">
+        <a href="${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/employer/dashboard" class="cta-button">
+          Review Application
+        </a>
       </div>
-    `,
-    button: {
-      text: 'Review Application',
-      url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/employer/dashboard`
-    }
-  }, 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)');
+    `)
+    .replace('{{INFO_BOX}}', `
+      <div class="info-box">
+        <h3>Candidate Details</h3>
+        <p><strong>Name:</strong> ${candidateName}</p>
+        <p><strong>Position:</strong> ${jobTitle}</p>
+        <p><strong>Applied:</strong> ${new Date().toLocaleDateString('en-ZA')}</p>
+      </div>
+    `);
 
   const result = await sendEmail(employerEmail, subject, html);
   return result.success;
@@ -587,89 +483,96 @@ export const sendNewApplicationNotification = async (employerEmail, candidateNam
 
 // ===== APPLICATION STATUS NOTIFICATION =====
 export const sendApplicationStatusNotification = async (candidateEmail, candidateName, jobTitle, companyName, status, employerName) => {
-  let emailConfig = {};
+  let subject, icon, title, content, infoBox, buttonColor;
+  
+  const frontendURL = process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app';
 
   switch (status) {
     case 'accepted':
-      emailConfig = {
-        subject: `Congratulations! Your application for ${jobTitle} has been accepted`,
-        icon: '🎉',
-        title: 'Application Accepted!',
-        subtitle: 'Your skills stood out from the crowd',
-        headerColor: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
-        message: `
-          <p>Congratulations, <strong>${candidateName}</strong>! The team at <strong>${companyName}</strong> was impressed with your application for the <strong>${jobTitle}</strong> position and would like to move forward.</p>
-        `,
-        highlightBox: `
-          <div class="highlight-box success">
-            <h3 class="highlight-title">📅 Next Steps</h3>
-            <p><strong>${employerName}</strong> will contact you shortly to discuss the interview process and next stages. This is your moment to shine - prepare to showcase your talents and learn more about this exciting opportunity!</p>
-          </div>
-        `,
-        button: {
-          text: 'Prepare for Interview',
-          url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/dashboard`,
-          variant: 'success'
-        }
-      };
+      subject = `Congratulations! Your application for ${jobTitle} has been accepted`;
+      icon = '🎉';
+      title = 'Application Accepted!';
+      buttonColor = '#10b981';
+      content = `
+        <p>Congratulations, <strong>${candidateName}</strong>! Your application for the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong> has been accepted!</p>
+        <p>The employer, <strong>${employerName}</strong>, will contact you shortly to discuss the next steps in the hiring process.</p>
+      `;
+      infoBox = `
+        <div class="info-box">
+          <h3>📅 Next Steps</h3>
+          <ul>
+            <li>Expect contact from the employer within the next few days</li>
+            <li>Prepare for interviews and further discussions</li>
+            <li>Review the company and position details</li>
+            <li>Be ready to discuss your availability and start date</li>
+          </ul>
+        </div>
+      `;
       break;
     
     case 'rejected':
-      emailConfig = {
-        subject: `Update on your application for ${jobTitle}`,
-        icon: '💼',
-        title: 'Application Update',
-        subtitle: 'Your journey continues',
-        headerColor: 'linear-gradient(135deg, #6b7280 0%, #4b5563 100%)',
-        message: `
-          <p>Thank you for your interest in the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>. We appreciate the time and effort you put into your application.</p>
-          <p>After careful consideration, we regret to inform you that your application was not successful at this time.</p>
-        `,
-        highlightBox: `
-          <div class="highlight-box">
-            <h3 class="highlight-title">🚀 Keep Moving Forward</h3>
-            <p>Every application is a step forward in your career journey. Continue refining your skills, exploring opportunities, and remember that the right role is out there waiting for your unique talents.</p>
-          </div>
-        `,
-        button: {
-          text: 'Explore New Opportunities',
-          url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/jobs`
-        }
-      };
+      subject = `Update on your application for ${jobTitle}`;
+      icon = '💼';
+      title = 'Application Update';
+      buttonColor = '#6b7280';
+      content = `
+        <p>Thank you for your interest in the <strong>${jobTitle}</strong> position at <strong>${companyName}</strong>.</p>
+        <p>After careful consideration, we regret to inform you that your application was not successful at this time.</p>
+      `;
+      infoBox = `
+        <div class="info-box">
+          <h3>🚀 Continue Your Journey</h3>
+          <ul>
+            <li>Don't be discouraged - persistence is key in job searching</li>
+            <li>Continue enhancing your skills and qualifications</li>
+            <li>Explore other opportunities that match your profile</li>
+            <li>Consider requesting feedback to improve future applications</li>
+          </ul>
+        </div>
+      `;
       break;
     
     case 'reviewed':
-      emailConfig = {
-        subject: `Your application for ${jobTitle} is being reviewed`,
-        icon: '👀',
-        title: 'Application in Review',
-        subtitle: 'Great progress on your application',
-        headerColor: 'linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%)',
-        message: `
-          <p>Great news! Your application for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> has been reviewed and is being actively considered by the hiring team.</p>
-        `,
-        highlightBox: `
-          <div class="highlight-box info">
-            <h3 class="highlight-title">⏳ While You Wait</h3>
-            <p>The employer is currently evaluating all applications and will provide updates soon. This is a positive step forward in the selection process!</p>
-          </div>
-        `,
-        button: {
-          text: 'View Your Applications',
-          url: `${process.env.FRONTEND_URL || 'https://jobconnect-platform.vercel.app'}/dashboard`
-        }
-      };
+      subject = `Your application for ${jobTitle} is under review`;
+      icon = '👀';
+      title = 'Application Reviewed';
+      buttonColor = '#0ea5e9';
+      content = `
+        <p>Great news! Your application for <strong>${jobTitle}</strong> at <strong>${companyName}</strong> has been reviewed and is being actively considered.</p>
+        <p>The hiring team is currently evaluating all applications and will provide further updates soon.</p>
+      `;
+      infoBox = `
+        <div class="info-box">
+          <h3>⏳ While You Wait</h3>
+          <ul>
+            <li>Keep your contact information current and accessible</li>
+            <li>Prepare for potential interviews or assessments</li>
+            <li>Research the company and industry trends</li>
+            <li>Continue exploring other suitable opportunities</li>
+          </ul>
+        </div>
+      `;
       break;
     
     default:
       return false;
   }
 
-  const html = baseEmailTemplate({
-    ...emailConfig,
-    userName: candidateName
-  }, emailConfig.headerColor);
+  const html = baseEmailTemplate
+    .replace(/{{ICON}}/g, icon)
+    .replace('{{TITLE}}', title)
+    .replace('{{USERNAME}}', candidateName)
+    .replace('{{CONTENT}}', content)
+    .replace('{{ACTION_BUTTON}}', `
+      <div class="button-container">
+        <a href="${frontendURL}/jobs" class="cta-button" style="background: linear-gradient(135deg, ${buttonColor}, ${buttonColor}dd);">
+          Browse More Jobs
+        </a>
+      </div>
+    `)
+    .replace('{{INFO_BOX}}', infoBox)
+    .replace(/#2563eb/g, buttonColor);
 
-  const result = await sendEmail(candidateEmail, emailConfig.subject, html);
+  const result = await sendEmail(candidateEmail, subject, html);
   return result.success;
 };
