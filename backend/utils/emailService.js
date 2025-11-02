@@ -8,12 +8,13 @@ console.log('Email Configuration:', {
   apiKey: process.env.BREVO_API_KEY ? 'Set' : 'Not Set'
 });
 
-// Initialize Brevo
-let defaultClient = brevo.ApiClient.instance;
-let apiKey = defaultClient.authentications['api-key'];
-apiKey.apiKey = process.env.BREVO_API_KEY;
+// Initialize Brevo - CORRECTED APPROACH
+const apiInstance = new brevo.TransactionalEmailsApi();
 
-let apiInstance = new brevo.TransactionalEmailsApi();
+// Configure API key
+if (process.env.BREVO_API_KEY) {
+  apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
+}
 
 // Helper function to send emails
 const sendEmail = async (to, subject, html) => {
@@ -24,7 +25,7 @@ const sendEmail = async (to, subject, html) => {
       return { success: true, simulated: true };
     }
 
-    let sendSmtpEmail = new brevo.SendSmtpEmail();
+    const sendSmtpEmail = new brevo.SendSmtpEmail();
     
     sendSmtpEmail.subject = subject;
     sendSmtpEmail.htmlContent = html;
@@ -32,7 +33,7 @@ const sendEmail = async (to, subject, html) => {
       name: 'JobConnect South Africa',
       email: 'noreply@jobconnect-platform.com'
     };
-    sendSmtpEmail.to = [{ email: to, name: to.split('@')[0] }];
+    sendSmtpEmail.to = [{ email: to }];
     
     const result = await apiInstance.sendTransacEmail(sendSmtpEmail);
     
