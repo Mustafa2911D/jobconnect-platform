@@ -82,7 +82,6 @@ const sendEmail = async (to, subject, html) => {
 const getBaseTemplate = (content, options = {}) => {
   const { 
     preheader = '', 
-    designType = 'default',
     accentColor = '#2563eb',
     headerColor = '#2563eb',
     icon = '💼',
@@ -90,7 +89,7 @@ const getBaseTemplate = (content, options = {}) => {
     headerStyle = 'default'
   } = options;
   
-  // Ensure header uses the accent color as background
+  // Ensure header uses the headerColor as background
   const headerGradient = `linear-gradient(135deg, ${headerColor} 0%, ${headerColor}dd 100%)`;
   
   const patterns = {
