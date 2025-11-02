@@ -16,8 +16,8 @@ if (process.env.BREVO_API_KEY) {
   apiInstance.setApiKey(brevo.TransactionalEmailsApiApiKeys.apiKey, process.env.BREVO_API_KEY);
 }
 
-// Base email template with professional styling
-const baseEmailTemplate = (content, headerColor = '#2563eb') => `
+// Base email template with professional styling - FIXED VERSION
+const baseEmailTemplate = `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,7 +51,7 @@ const baseEmailTemplate = (content, headerColor = '#2563eb') => `
         }
         
         .email-header {
-            background: linear-gradient(135deg, ${headerColor}, ${headerColor}dd);
+            background: linear-gradient(135deg, #2563eb, #2563ebdd);
             padding: 40px 30px;
             text-align: center;
             color: white;
@@ -98,7 +98,7 @@ const baseEmailTemplate = (content, headerColor = '#2563eb') => `
             border-radius: 12px;
             padding: 24px;
             margin: 32px 0;
-            border-left: 4px solid ${headerColor};
+            border-left: 4px solid #2563eb;
         }
         
         .info-box h3 {
@@ -122,7 +122,7 @@ const baseEmailTemplate = (content, headerColor = '#2563eb') => `
         
         .info-box li:before {
             content: "•";
-            color: ${headerColor};
+            color: #2563eb;
             font-weight: bold;
             position: absolute;
             left: 8px;
@@ -135,7 +135,7 @@ const baseEmailTemplate = (content, headerColor = '#2563eb') => `
         
         .cta-button {
             display: inline-block;
-            background: linear-gradient(135deg, ${headerColor}, ${headerColor}dd);
+            background: linear-gradient(135deg, #2563eb, #2563ebdd);
             color: white;
             padding: 14px 32px;
             text-decoration: none;
@@ -558,20 +558,22 @@ export const sendApplicationStatusNotification = async (candidateEmail, candidat
       return false;
   }
 
-  const html = baseEmailTemplate
-    .replace(/{{ICON}}/g, icon)
+  // Create a modified template with the specific button color
+  const modifiedTemplate = baseEmailTemplate.replace(/#2563eb/g, buttonColor);
+  
+  const html = modifiedTemplate
+    .replace('{{ICON}}', icon)
     .replace('{{TITLE}}', title)
     .replace('{{USERNAME}}', candidateName)
     .replace('{{CONTENT}}', content)
     .replace('{{ACTION_BUTTON}}', `
       <div class="button-container">
-        <a href="${frontendURL}/jobs" class="cta-button" style="background: linear-gradient(135deg, ${buttonColor}, ${buttonColor}dd);">
+        <a href="${frontendURL}/jobs" class="cta-button">
           Browse More Jobs
         </a>
       </div>
     `)
-    .replace('{{INFO_BOX}}', infoBox)
-    .replace(/#2563eb/g, buttonColor);
+    .replace('{{INFO_BOX}}', infoBox);
 
   const result = await sendEmail(candidateEmail, subject, html);
   return result.success;
