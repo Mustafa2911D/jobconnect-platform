@@ -69,13 +69,13 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     if (process.env.NODE_ENV === 'production') {
       if (file.fieldname === 'resume') {
-        cb(null, '/tmp/uploads');
+        cb(null, '/tmp/uploads/resumes');  
       } else {
         cb(null, '/tmp/uploads/profile-images');
       }
     } else {
       if (file.fieldname === 'resume') {
-        cb(null, path.join(__dirname, '../uploads'));
+        cb(null, path.join(__dirname, '../uploads/resumes')); 
       } else {
         cb(null, path.join(__dirname, '../uploads/profile-images'));
       }

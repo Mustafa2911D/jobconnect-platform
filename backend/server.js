@@ -38,7 +38,9 @@ connectDB();
 const ensureUploadDirs = () => {
   const uploadDirs = [
     '/tmp/uploads/profile-images',
-    path.join(__dirname, 'uploads', 'profile-images')
+    '/tmp/uploads/resumes',  
+    path.join(__dirname, 'uploads', 'profile-images'),
+    path.join(__dirname, 'uploads', 'resumes') 
   ];
   
   uploadDirs.forEach(dir => {

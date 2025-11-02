@@ -240,41 +240,51 @@ const ApplicationsManagement = () => {
   };
 
   const downloadResume = (resumeUrl) => {
-    try {
-      console.log('📄 Original resume URL from database:', resumeUrl);
-      
-      let resumeFilename;
-      if (resumeUrl.includes('\\')) {
-        resumeFilename = resumeUrl.split('\\').pop();
-      } else if (resumeUrl.includes('/')) {
-        resumeFilename = resumeUrl.split('/').pop();
-      } else {
-        resumeFilename = resumeUrl;
-      }
-      
-      console.log('🔧 Extracted filename:', resumeFilename);
-      
-      // Use production backend URL
-      const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
-      const correctResumeUrl = `${baseUrl}/uploads/${resumeFilename}`;
-      
-      console.log('🌐 Correct resume URL:', correctResumeUrl);
-      
-      window.open(correctResumeUrl, '_blank');
-      showToast('📄 Opening resume...', 'info');
-      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
-    } catch (error) {
-      console.error('❌ Error opening resume:', error);
-      showToast('Error opening resume', 'error');
+  try {
+    console.log('📄 Original resume URL from database:', resumeUrl);
+    
+    let resumeFilename;
+    if (resumeUrl.includes('\\')) {
+      resumeFilename = resumeUrl.split('\\').pop();
+    } else if (resumeUrl.includes('/')) {
+      resumeFilename = resumeUrl.split('/').pop();
+    } else {
+      resumeFilename = resumeUrl;
     }
-  };
+    
+    console.log('🔧 Extracted filename:', resumeFilename);
+    
+    // 🔥 FIX: Use the correct path for resumes
+    const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
+    
+    // Try different possible paths
+    const possiblePaths = [
+      `${baseUrl}/uploads/resumes/${resumeFilename}`,  
+      `${baseUrl}/uploads/${resumeFilename}`,         
+      `${baseUrl}/${resumeFilename}`                   
+    ];
+    
+    console.log('🌐 Trying resume URLs:', possiblePaths);
+    
+    // Try the first path (new corrected path)
+    const correctResumeUrl = possiblePaths[0];
+    console.log('🌐 Using resume URL:', correctResumeUrl);
+    
+    window.open(correctResumeUrl, '_blank');
+    showToast('📄 Opening resume...', 'info');
+    setMobileMenuOpen(null);
+  } catch (error) {
+    console.error('❌ Error opening resume:', error);
+    showToast('Error opening resume', 'error');
+  }
+};
 
   const viewCandidateProfile = (candidateId) => {
     try {
       navigate(`/employer/candidates/${candidateId}`);
       console.log('Opening candidate profile for ID:', candidateId);
       showToast('👤 Opening candidate profile...', 'info');
-      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
+      setMobileMenuOpen(null); 
     } catch (error) {
       console.error('Error navigating to candidate profile:', error);
       showToast('Error loading candidate profile', 'error');
@@ -292,7 +302,7 @@ const ApplicationsManagement = () => {
         }
       });
       showToast(`💬 Starting conversation with ${candidateName}`, 'info');
-      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
+      setMobileMenuOpen(null); 
     } catch (error) {
       console.error('Error starting conversation:', error);
       showToast('Error starting conversation', 'error');
@@ -312,7 +322,7 @@ const ApplicationsManagement = () => {
     } else {
       showToast('👤 Candidate profile already saved', 'info');
     }
-    setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
+    setMobileMenuOpen(null); 
   };
 
   // Effects
