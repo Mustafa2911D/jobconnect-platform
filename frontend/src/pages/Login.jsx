@@ -62,7 +62,6 @@ const Login = () => {
 
   const quickLogin = (email, password) => {
     setFormData({ email, password });
-    // Add visual feedback for quick login selection
     const buttons = document.querySelectorAll('.quick-login-btn');
     buttons.forEach(btn => btn.classList.remove('selected'));
     event.currentTarget.classList.add('selected');

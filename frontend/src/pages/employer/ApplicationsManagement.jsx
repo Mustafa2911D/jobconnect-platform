@@ -8,7 +8,7 @@ import {
   MessageCircle, ArrowUpRight, Sparkles, TrendingUp,
   Users, BarChart3, RefreshCw, Zap, Target, Award,
   Share2, Bookmark, ExternalLink,
-  MoreVertical // 🔥 ADD MoreVertical icon for mobile menu
+  MoreVertical 
 } from 'lucide-react';
 import { showToast } from '../../utils/toast.js';
 
@@ -25,7 +25,7 @@ const ApplicationsManagement = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const [selectedApplications, setSelectedApplications] = useState(new Set());
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(null); // 🔥 ADD mobile menu state
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(null); 
   
   const [stats, setStats] = useState({
     total: 0,
@@ -91,7 +91,7 @@ const ApplicationsManagement = () => {
       setApplications(prev => prev.map(app => 
         app._id === applicationId ? { ...app, status } : app
       ));
-      setMobileMenuOpen(null); // 🔥 CLOSE mobile menu after action
+      setMobileMenuOpen(null); 
     } catch (error) {
       console.error('Error updating application status:', error);
       showToast('Error updating application status', 'error');
@@ -254,10 +254,10 @@ const ApplicationsManagement = () => {
     
     console.log('🔧 Extracted filename:', resumeFilename);
     
-    // 🔥 FIX: Use the correct path for resumes
+    // Path for resumes
     const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
     
-    // Try different possible paths
+    // Different possible paths
     const possiblePaths = [
       `${baseUrl}/uploads/resumes/${resumeFilename}`,  
       `${baseUrl}/uploads/${resumeFilename}`,         
@@ -266,7 +266,7 @@ const ApplicationsManagement = () => {
     
     console.log('🌐 Trying resume URLs:', possiblePaths);
     
-    // Try the first path (new corrected path)
+    // Try the first path 
     const correctResumeUrl = possiblePaths[0];
     console.log('🌐 Using resume URL:', correctResumeUrl);
     
@@ -526,7 +526,7 @@ const ApplicationsManagement = () => {
                   <div className={`relative bg-white border rounded-xl p-6 transition-all duration-300 transform ${
                     hoveredCard === application._id ? '-translate-y-1 shadow-xl border-green-600' : 'border-gray-200 shadow-sm'
                   }`}>
-                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4"> {/* 🔥 CHANGED to flex-col on mobile */}
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4"> 
                       {/* Left Section - Candidate Info */}
                       <div className="flex items-start space-x-4 flex-1">
                         {/* Selection Checkbox */}
@@ -539,8 +539,8 @@ const ApplicationsManagement = () => {
                         
                         {/* Candidate Info */}
                         <div className="flex-1">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4"> {/* 🔥 CHANGED to flex-col on mobile */}
-                            <div className="flex items-start space-x-4 mb-3 sm:mb-0"> {/* 🔥 ADD margin on mobile */}
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4"> 
+                            <div className="flex items-start space-x-4 mb-3 sm:mb-0"> 
                               <div className="relative group/avatar">
                                 <div className="absolute inset-0 bg-gradient-to-r from-green-600 to-blue-800 rounded-xl blur opacity-0 group-hover/avatar:opacity-20 transition duration-500"></div>
                                 <div className="relative w-12 h-12 bg-gradient-to-r from-green-600 to-blue-800 rounded-xl flex items-center justify-center text-white text-lg font-bold shadow-lg transform group-hover/avatar:scale-110 transition-transform duration-300 overflow-hidden">
@@ -564,7 +564,7 @@ const ApplicationsManagement = () => {
                               </div>
                               <div className="flex-1">
                                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-3">
-                                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3"> {/* 🔥 CHANGED to flex-col on mobile */}
+                                  <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-3"> 
                                     <h3 className="text-xl font-bold text-gray-900 group-hover:text-green-600 transition-colors duration-300">
                                       {application.candidate?.name}
                                     </h3>
@@ -579,7 +579,7 @@ const ApplicationsManagement = () => {
                                 
                                 <p className="text-gray-600 mb-3 font-medium">{application.candidate?.email}</p>
                                 
-                                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-500 mb-4"> {/* 🔥 CHANGED to flex-col on mobile */}
+                                <div className="flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0 sm:space-x-4 text-sm text-gray-500 mb-4"> 
                                   <div className="flex items-center space-x-1 bg-gray-100 px-3 py-1 rounded-lg">
                                     <FileText className="h-4 w-4" />
                                     <span className="font-medium">Applied for: {application.job?.title}</span>
@@ -623,7 +623,7 @@ const ApplicationsManagement = () => {
                       </div>
 
                       {/* Right Section - Action Buttons */}
-                      <div className="flex flex-col items-stretch space-y-4 lg:items-end lg:ml-6 lg:min-w-[200px]"> {/* 🔥 CHANGED to items-stretch on mobile */}
+                      <div className="flex flex-col items-stretch space-y-4 lg:items-end lg:ml-6 lg:min-w-[200px]"> 
                         {/* Quick Action Buttons - Desktop */}
                         <div className="hidden lg:flex items-center space-x-2">
                           <button
@@ -704,7 +704,7 @@ const ApplicationsManagement = () => {
                             <span className="font-semibold">View Resume</span>
                           </button>
                           
-                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2"> {/* 🔥 CHANGED to 3 columns on sm screens */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2"> 
                             <button
                               onClick={() => updateApplicationStatus(application._id, 'accepted')}
                               disabled={application.status === 'accepted'}
@@ -715,7 +715,7 @@ const ApplicationsManagement = () => {
                               }`}
                             >
                               <CheckCircle className="h-4 w-4 transition-transform group-hover/accept:scale-110" />
-                              <span className="hidden sm:inline">Accept</span> {/* 🔥 HIDE text on mobile */}
+                              <span className="hidden sm:inline">Accept</span> 
                             </button>
                             <button
                               onClick={() => updateApplicationStatus(application._id, 'rejected')}
@@ -727,7 +727,7 @@ const ApplicationsManagement = () => {
                               }`}
                             >
                               <XCircle className="h-4 w-4 transition-transform group-hover/reject:scale-110" />
-                              <span className="hidden sm:inline">Reject</span> {/* 🔥 HIDE text on mobile */}
+                              <span className="hidden sm:inline">Reject</span> 
                             </button>
                             <button
                               onClick={() => updateApplicationStatus(application._id, 'reviewed')}
@@ -739,7 +739,7 @@ const ApplicationsManagement = () => {
                               }`}
                             >
                               <Eye className="h-4 w-4 transition-transform group-hover/review:scale-110" />
-                              <span className="hidden sm:inline">Reviewed</span> {/* 🔥 HIDE text on mobile */}
+                              <span className="hidden sm:inline">Reviewed</span> 
                             </button>
                           </div>
                         </div>

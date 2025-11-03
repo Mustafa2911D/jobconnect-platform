@@ -451,7 +451,7 @@ export const getAvailableUsers = async (req, res) => {
       console.log(`👥 Found ${availableUsers.length} unique employers for candidate`);
 
     } else {
-      // For other roles (admin, etc.), return empty for now
+      // For other roles 
       availableUsers = [];
     }
 

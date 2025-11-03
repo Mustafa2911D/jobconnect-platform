@@ -122,7 +122,6 @@ const SavedProfiles = () => {
   // Event Handlers
   const contactCandidate = (profile) => {
     showToast(`Opening conversation with ${profile.candidate.name}`, 'info');
-    // In production, this would navigate to messages
   };
 
   const viewProfile = (candidateId) => {

@@ -106,7 +106,7 @@
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-/* Fix for messages layout */
+/* Messages layout */
 .messages-container {
   flex: 1;
   min-height: 0;

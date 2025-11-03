@@ -11,7 +11,7 @@ import {
 } from 'lucide-react';
 import getImageUrl from '../utils/imageUrl';
 
-// Constants and Configuration
+// Constants 
 const qualificationTypes = [
   { value: 'high-school', label: 'High School', icon: Bookmark },
   { value: 'certificate', label: 'Certificate', icon: FileText },
@@ -773,7 +773,7 @@ const Education = () => {
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {renderSidebar()}
 
-          {/* Enhanced Main Content */}
+          {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
             {renderHeader()}
             {renderEditingForm()}

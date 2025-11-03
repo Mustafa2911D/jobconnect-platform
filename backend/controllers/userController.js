@@ -323,7 +323,7 @@ export const updateSettings = async (req, res) => {
       });
     }
 
-    // Initialize preferences if they don't exist
+    // Initialize preferences 
     if (!user.profile) {
       user.profile = {};
     }
@@ -331,7 +331,7 @@ export const updateSettings = async (req, res) => {
       user.profile.preferences = {};
     }
 
-    // Update settings with proper structure
+    // Update settings 
     user.profile.preferences = {
       ...user.profile.preferences,
       notifications: settings.notifications,
@@ -698,7 +698,7 @@ export const deleteAccount = async (req, res) => {
       });
     }
 
-    // FIX: Correct password verification - only pass the candidate password
+    // Password verification 
     const isPasswordCorrect = await user.correctPassword(password);
     console.log('Password verification result:', isPasswordCorrect);
     
@@ -784,7 +784,7 @@ export const getEmployerPublicProfile = async (req, res) => {
       });
     }
 
-    // Check if employer has active jobs (only show profiles with active jobs)
+    // Check if employer has active jobs 
     const activeJobsCount = await Job.countDocuments({ 
       employer: employerId, 
       status: 'active' 

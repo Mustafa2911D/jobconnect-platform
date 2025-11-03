@@ -1,11 +1,11 @@
 import rateLimit from 'express-rate-limit';
 
-// 🔥 ADD: Common rate limit configuration with proxy support
+// Common rate limit configuration with proxy support
 const commonConfig = {
   windowMs: 15 * 60 * 1000,
   standardHeaders: true,
   legacyHeaders: false,
-  trustProxy: true, // 🔥 ADD THIS FOR RENDER
+  trustProxy: true, 
 };
 
 // ===== AUTHENTICATION RATE LIMITING =====

@@ -19,7 +19,7 @@ import {
   Share2,
   ExternalLink,
   Eye,
-  Loader // 🔥 ADD Loader icon
+  Loader 
 } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
 
@@ -34,7 +34,7 @@ const JobDetail = () => {
   const [resume, setResume] = useState(null);
   const [coverLetter, setCoverLetter] = useState('');
   const [isSticky, setIsSticky] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0); // 🔥 ADD progress state
+  const [uploadProgress, setUploadProgress] = useState(0); 
 
   // Effects
   useEffect(() => {
@@ -72,14 +72,14 @@ const JobDetail = () => {
       return;
     }
 
-    // 🔥 ADD: File size validation
+    // File size validation
     if (resume.size > 5 * 1024 * 1024) {
       showToast('File size too large. Maximum 5MB allowed.', 'error');
       return;
     }
 
     setApplying(true);
-    setUploadProgress(0); // 🔥 Reset progress
+    setUploadProgress(0); 
 
     try {
       const formData = new FormData();
@@ -91,8 +91,7 @@ const JobDetail = () => {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
-        timeout: 60000, // 🔥 INCREASE timeout to 60 seconds
-        // 🔥 ADD: Upload progress tracking
+        timeout: 60000, 
         onUploadProgress: (progressEvent) => {
           if (progressEvent.total) {
             const percentCompleted = Math.round(
@@ -109,7 +108,6 @@ const JobDetail = () => {
     } catch (error) {
       console.error('Error applying for job:', error);
       
-      // 🔥 IMPROVED: Better error messages
       if (error.code === 'ECONNABORTED') {
         showToast('Upload is taking longer than expected. Please try again with a smaller file.', 'error');
       } else if (error.response?.data?.message) {
@@ -119,7 +117,7 @@ const JobDetail = () => {
       }
     } finally {
       setApplying(false);
-      setUploadProgress(0); // 🔥 Reset progress when done
+      setUploadProgress(0); 
     }
   };
 
@@ -127,7 +125,6 @@ const JobDetail = () => {
   const getImageUrl = (imagePath) => {
     if (!imagePath) return null;
     if (imagePath.startsWith('http')) return imagePath;
-    // 🔥 UPDATE: Use production backend URL
     const baseUrl = 'https://jobconnect-backend-yyho.onrender.com';
     if (imagePath.startsWith('uploads/')) {
       return `${baseUrl}/${imagePath}`;
@@ -174,7 +171,7 @@ const JobDetail = () => {
     }
   };
 
-  // 🔥 ADD: Format file size for display
+  // Format file size for display
   const formatFileSize = (bytes) => {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
@@ -455,7 +452,7 @@ const JobDetail = () => {
                     </div>
                   </div>
 
-                  {/* 🔥 ADD: Upload Progress Bar */}
+                  {/* Upload Progress Bar */}
                   {applying && uploadProgress > 0 && (
                     <div className="space-y-2">
                       <div className="flex justify-between text-sm text-gray-600">

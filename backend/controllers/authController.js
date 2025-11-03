@@ -52,7 +52,7 @@ export const register = async (req, res) => {
 
     const user = await User.create(userData);
 
-    // Send welcome email (don't await to avoid blocking response)
+    // Send welcome email 
     sendWelcomeEmail(user.email, user.name, user.role).catch(error => {
       console.error('Failed to send welcome email:', error);
     });
@@ -163,7 +163,6 @@ export const forgotPassword = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) {
-      // Don't reveal whether email exists for security
       return res.json({
         success: true,
         message: 'If an account with that email exists, a password reset link has been sent'
@@ -254,7 +253,6 @@ export const resetPassword = async (req, res) => {
       await sendPasswordResetConfirmation(user.email, user.name);
     } catch (emailError) {
       console.error('Error sending password reset confirmation:', emailError);
-      // Don't fail the request if email fails
     }
 
     res.json({
@@ -309,7 +307,6 @@ export const changePassword = async (req, res) => {
       await sendPasswordChangeConfirmation(user.email, user.name);
     } catch (emailError) {
       console.error('Error sending password change confirmation:', emailError);
-      // Don't fail the request if email fails
     }
 
     res.json({

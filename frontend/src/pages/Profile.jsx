@@ -194,7 +194,7 @@ const Profile = () => {
       return;
     }
 
-    // Validate file size (5MB)
+    // Validate file size 
     if (file.size > 5 * 1024 * 1024) {
       showToast('Image must be smaller than 5MB', 'error');
       return;
@@ -214,7 +214,6 @@ const Profile = () => {
         
         showToast('Profile image updated successfully! 🎉');
         
-        // Refresh the entire user profile to ensure consistency
         await refreshUserProfile();
       }
     } catch (error) {

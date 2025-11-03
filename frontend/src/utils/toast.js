@@ -1,5 +1,4 @@
 export const showToast = (message, type = 'success') => {
-  // Remove existing toasts
   const existingToasts = document.querySelectorAll('.custom-toast');
   existingToasts.forEach(toast => {
     toast.style.transform = 'translateX(100%)';
@@ -71,7 +70,7 @@ export const showToast = (message, type = 'success') => {
     }, 500);
   }, 4000);
 
-  // Allow manual close on click (except close button)
+  // Allow manual close on click 
   toast.addEventListener('click', (e) => {
     if (!e.target.closest('.toast-close')) {
       clearTimeout(autoRemove);

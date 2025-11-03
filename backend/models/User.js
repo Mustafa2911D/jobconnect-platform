@@ -53,7 +53,6 @@ const userSchema = new mongoose.Schema({
       privacy: { type: String, enum: ['public', 'private', 'connections'], default: 'public' },
       notificationFrequency: { type: String, enum: ['instant', 'daily', 'weekly'], default: 'instant' },
       
-      // Add these new settings fields
       notifications: {
         newApplications: { type: Boolean, default: true },
         candidateMessages: { type: Boolean, default: true },
@@ -273,7 +272,7 @@ userSchema.methods.createPasswordResetToken = function() {
     .update(resetToken)
     .digest('hex');
     
-  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; 
   
   return resetToken;
 };

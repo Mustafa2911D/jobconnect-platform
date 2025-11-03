@@ -21,7 +21,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      // 🔥 FIX: Use authAPI instead of direct fetch
+      // Use authAPI 
       const response = await authAPI.forgotPassword(email);
       
       if (response.data.success) {

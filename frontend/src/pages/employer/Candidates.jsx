@@ -550,7 +550,7 @@ const Candidates = () => {
         </div>
       </div>
 
-      {/* Add custom animations */}
+      {/* Custom animations */}
       <style>
         {`
           @keyframes fadeIn {

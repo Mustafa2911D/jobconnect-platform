@@ -334,8 +334,7 @@ const Notifications = () => {
   };
 
   const generateSampleNotifications = () => {
-    // ... (keep your existing sample data generation)
-    return []; // Your existing sample data
+    return []; 
   };
 
   const formatNotificationTime = (timestamp) => {

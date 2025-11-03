@@ -156,7 +156,7 @@ function App() {
                 </ProtectedRoute>
               } />
 
-              {/* Catch all route - redirect to home */}
+              {/* Redirect to home */}
               <Route path="*" element={<Home />} />
             </Routes>
           </main>

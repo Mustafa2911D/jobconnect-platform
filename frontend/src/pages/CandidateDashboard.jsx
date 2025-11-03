@@ -14,7 +14,7 @@ import {
 import { showToast } from '../utils/toast.js';
 import getImageUrl from '../utils/imageUrl';
 
-// Constants and Configuration
+// Constants 
 const quickActions = [
   { 
     icon: FileText, 
@@ -821,7 +821,7 @@ Check out my progress on JobConnect!`;
           </div>
         </div>
 
-        {/* Perfect Matches with Bookmark and Share */}
+        {/* Perfect Matches */}
         <div className="card p-6 hover:shadow-xl transition-all duration-300 bg-gradient-to-br from-green-50 to-emerald-50 border border-green-200">
           <div className="flex items-center justify-between mb-6">
             <h3 className="text-xl font-bold text-gray-900 flex items-center space-x-2">

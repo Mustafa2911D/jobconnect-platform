@@ -201,16 +201,13 @@ const CreateJob = () => {
   setLoading(true);
 
   try {
-    // Flatten the nested objects for backend validation
     const submitData = {
       title: formData.title,
       company: formData.company,
-      // Flatten location
       'location.province': formData.location.province,
       'location.city': formData.location.city,
       type: formData.type,
       category: formData.category,
-      // Flatten salary
       'salary.min': formData.salary.min ? parseInt(formData.salary.min) : undefined,
       'salary.max': formData.salary.max ? parseInt(formData.salary.max) : undefined,
       'salary.currency': formData.salary.currency,
@@ -222,13 +219,11 @@ const CreateJob = () => {
       skills: formData.skills.filter(skill => skill.trim() !== ''),
       benefits: formData.benefits.filter(benefit => benefit.trim() !== ''),
       experienceLevel: formData.experienceLevel,
-      // Flatten SA requirements
       'saRequirements.bbBee': formData.saRequirements.bbBee,
       'saRequirements.saCitizen': formData.saRequirements.saCitizen,
       'saRequirements.driversLicense': formData.saRequirements.driversLicense,
       'saRequirements.clearCriminalRecord': formData.saRequirements.clearCriminalRecord,
       'saRequirements.languageRequirements': formData.saRequirements.languageRequirements.filter(lang => lang.trim() !== ''),
-      // Flatten application
       'application.deadline': formData.application.deadline,
       'application.instructions': formData.application.instructions,
       'application.questions': formData.application.questions.filter(question => question.trim() !== ''),
@@ -243,7 +238,7 @@ const CreateJob = () => {
   } catch (error) {
     console.error('Error creating job:', error);
     
-    // Enhanced error logging
+    // Error logging
     if (error.response?.data?.errors) {
       console.log('Validation errors:', error.response.data.errors);
       const errorMessages = error.response.data.errors.map(err => err.msg).join(', ');

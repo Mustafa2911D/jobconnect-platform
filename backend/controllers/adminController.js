@@ -233,8 +233,6 @@ const getUserDemographics = async () => {
 };
 
 const getRevenueStats = async (sinceDate) => {
-  // Placeholder for revenue statistics
-  // In a real application, this would integrate with your payment system
   return {
     totalRevenue: 0,
     featuredJobRevenue: 0,

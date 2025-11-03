@@ -15,7 +15,7 @@ import {
   BarChart3, PieChart as PieChartIcon, LineChart as LineChartIcon
 } from 'lucide-react';
 
-// Constants and Configuration
+// Constants
 const performanceMetrics = [
   {
     label: 'Response Rate',
@@ -104,7 +104,7 @@ const getEnhancedTrendData = (analytics) => {
     return analytics.applicationTrends;
   }
   
-  // Fallback mock data for better UX
+  // Fallback mock data 
   return [
     { date: 'Jan', applications: 12, interviews: 3, offers: 1 },
     { date: 'Feb', applications: 18, interviews: 5, offers: 2 },
@@ -485,7 +485,7 @@ const AnalyticsDashboardCandidate = () => {
               </ResponsiveContainer>
             </div>
             
-            {/* Enhanced Status Legend */}
+            {/* Status Legend */}
             <div className="mt-6 grid grid-cols-2 gap-3 w-full max-w-md">
               {applicationStatusData.map((status, index) => {
                 const percentage = totalApplications > 0 ? ((status.value / totalApplications) * 100).toFixed(1) : 0;

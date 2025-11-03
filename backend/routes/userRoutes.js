@@ -20,7 +20,7 @@ import upload, { uploadProfileImage as uploadProfileImageMiddleware } from '../m
 
 const router = express.Router();
 
-// Public employer profile route (no authentication required)
+// Public employer profile route 
 router.get('/employer/:employerId/public-profile', getEmployerPublicProfile);
 
 router.use(protect);

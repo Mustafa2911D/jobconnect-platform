@@ -21,7 +21,6 @@ const validateJob = [
   body('location.province').notEmpty().withMessage('Province is required'),
   body('location.city').notEmpty().withMessage('City is required'),
   body('type').isIn(['Full-time', 'Part-time', 'Contract', 'Internship', 'Remote', 'Freelance']).withMessage('Invalid job type'),
-  // Fix category enum to match your actual categories
   body('category').isIn(['Information Technology', 'Finance', 'Healthcare', 'Engineering', 'Education', 'Sales & Marketing', 'Hospitality', 'Construction', 'Manufacturing', 'Government', 'Design', 'Other']).withMessage('Invalid category'),
   body('description').notEmpty().withMessage('Description is required'),
   body('requirements').notEmpty().withMessage('Requirements are required'),

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Lock, Eye, EyeOff, CheckCircle, AlertCircle, ArrowLeft, Shield } from 'lucide-react';
 import { showToast } from '../utils/toast.js';
-import { authAPI } from '../api/apiClient.js'; // ADD THIS IMPORT
+import { authAPI } from '../api/apiClient.js'; 
 
 const ResetPassword = () => {
   const [formData, setFormData] = useState({
@@ -26,7 +26,7 @@ const ResetPassword = () => {
       return;
     }
 
-    // Simulate token validation
+    // Token validation
     setTimeout(() => {
       setValidToken(true);
       setCheckingToken(false);
@@ -86,7 +86,6 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      // 🔥 FIX: Use authAPI instead of direct fetch
       const response = await authAPI.resetPassword(token, formData.password);
 
       if (response.data.success) {

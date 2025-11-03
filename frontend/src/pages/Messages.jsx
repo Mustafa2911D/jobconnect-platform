@@ -51,7 +51,7 @@ const Messages = () => {
   const fileInputRef = useRef(null);
   const isProcessingNavigationRef = useRef(false);
 
-  // Effects - Screen Size & Responsive Behavior
+  // Effects 
   useEffect(() => {
     const checkScreenSize = () => {
       const mobile = window.innerWidth < 1024;
@@ -214,7 +214,6 @@ const Messages = () => {
     const response = await messagesAPI.getAvailableUsers();
     
     if (response.data.success) {
-      // Filter out current user and ensure we have valid users
       const availableUsers = response.data.users.filter(userItem => 
         userItem && userItem._id && userItem._id !== (user._id || user.id) 
       );
@@ -281,7 +280,7 @@ const Messages = () => {
     return;
   }
   
-  // Client-side filtering for now since we don't have a dedicated search endpoint
+  // Client-side filtering 
   const filtered = availableUsers.filter(userItem =>
     userItem.name?.toLowerCase().includes(query.toLowerCase()) ||
     userItem.email?.toLowerCase().includes(query.toLowerCase()) ||
@@ -824,7 +823,7 @@ const Messages = () => {
 
                   {/* Messages Layout Container */}
                   <div className="flex-1 flex flex-col min-h-0">
-                    {/* Messages Container - FIXED HEIGHT WITH SCROLL */}
+                    {/* Messages Container */}
                     <div 
                       ref={messagesContainerRef}
                       className="flex-1 overflow-y-auto bg-gradient-to-b from-white to-gray-50/30"
@@ -925,7 +924,7 @@ const Messages = () => {
                       )}
                     </div>
 
-                    {/* Message Input - FIXED POSITION */}
+                    {/* Message Input */}
                     <div className="border-t border-gray-200 bg-white/95 backdrop-blur-sm p-4 lg:p-6 sticky bottom-0 z-10">
                       <div className="max-w-4xl mx-auto">
                         <div className="flex items-end space-x-3">

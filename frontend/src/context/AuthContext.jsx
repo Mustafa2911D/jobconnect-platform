@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }) => {
       if (error.response?.status === 429) {
         setRateLimitExceeded(true);
         console.log('Rate limit exceeded, will retry later');
-        setTimeout(() => setRateLimitExceeded(false), 60000); // Reset after 1 minute
+        setTimeout(() => setRateLimitExceeded(false), 60000); 
       } else if (error.response?.status === 401) {
         logout();
       }
@@ -149,7 +149,6 @@ export const AuthProvider = ({ children }) => {
     setRateLimitExceeded(false);
     delete apiClient.defaults.headers.common['Authorization'];
     
-    // Use window.location.replace for better redirect
     window.location.replace('/login');
   };
 

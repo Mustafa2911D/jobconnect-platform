@@ -27,7 +27,6 @@ const __dirname = path.dirname(__filename);
 const app = express();
 const server = createServer(app);
 
-// 🔥 CRITICAL FIX: Add trust proxy for rate limiting
 app.set('trust proxy', 1);
 
 // ===== INITIALIZATION =====
@@ -54,7 +53,6 @@ const ensureUploadDirs = () => {
 ensureUploadDirs();
 
 // ===== MIDDLEWARE SETUP =====
-// 🔥 FIXED CORS CONFIGURATION
 app.use(cors({
   origin: [
     'https://jobconnect-platform-zeta.vercel.app',
@@ -69,9 +67,8 @@ app.use(cors({
 // Handle preflight requests properly
 app.options('*', cors());
 
-// 🔥 CRITICAL FIX: Serve static files correctly in production
+// Serve static files correctly in production
 if (process.env.NODE_ENV === 'production') {
-  // Serve from /tmp/uploads in production
   app.use('/uploads', express.static('/tmp/uploads'));
   console.log('📁 Serving uploads from /tmp/uploads in production');
 } else {
@@ -85,7 +82,6 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(sanitizeInput);
 
 // ===== RATE LIMITING =====
-// Enable rate limiting in production
 if (process.env.NODE_ENV === 'production') {
   app.use('/api/auth', authLimiter);
   app.use('/api/applications/apply', jobApplicationLimiter);
@@ -94,7 +90,6 @@ if (process.env.NODE_ENV === 'production') {
 }
 
 // ===== REQUEST LOGGING =====
-// Only log in development for better performance
 if (process.env.NODE_ENV === 'development') {
   app.use('/api/users/profile', (req, res, next) => {
     console.log('User Profile Request:', {

@@ -99,7 +99,7 @@ const DeleteAccountModal = ({ isOpen, onClose, onConfirm }) => {
   );
 };
 
-// Separate Password Change Component to prevent re-renders
+// Separate Password Change Component 
 const PasswordChangeForm = ({ onChangePassword, passwordChanged }) => {
   const [changePasswordData, setChangePasswordData] = useState({
     currentPassword: '',
@@ -385,7 +385,6 @@ const Settings = () => {
       const response = await userAPI.getSettings();
       
       if (response.data.success) {
-        // Merge loaded settings with defaults to ensure all fields exist
         setSettings(prev => ({
           ...prev,
           ...response.data.settings
@@ -479,7 +478,6 @@ const Settings = () => {
       
       if (response.data.success) {
         showToast('Settings saved successfully! 🎉', 'success');
-        // Update user context if needed
         if (response.data.user) {
           updateUser(response.data.user);
         }
@@ -498,7 +496,7 @@ const Settings = () => {
       
       let response;
       
-      // Use the correct API based on user role
+      // API based on user role
       if (user?.role === 'employer') {
         console.log('Using employer API for deletion');
         response = await employerAPI.deleteAccount(password);
@@ -613,7 +611,7 @@ const Settings = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-emerald-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Enhanced Header */}
+        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-green-600 to-blue-800 bg-clip-text text-transparent">
             Settings & Preferences
@@ -624,7 +622,7 @@ const Settings = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Enhanced Sidebar */}
+          {/* Sidebar */}
           <div className="lg:col-span-1 space-y-6">
             <div className="sticky top-6 space-y-6">
               <div className="card p-6 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
@@ -725,7 +723,7 @@ const Settings = () => {
             </div>
           </div>
 
-          {/* Enhanced Main Content */}
+          {/* Main Content */}
           <div className="lg:col-span-3 space-y-8">
             {/* Notifications Tab */}
             {activeTab === 'notifications' && (

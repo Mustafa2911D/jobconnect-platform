@@ -34,7 +34,7 @@ export const applyForJob = async (req, res) => {
       });
     }
 
-    // 🔥 OPTIMIZATION: Process file first, then do database operations
+    // Process file first, then do database operations
     let resumePath = req.file.filename;
     if (resumePath.includes('/')) {
       resumePath = resumePath.split('/').pop();
@@ -42,7 +42,7 @@ export const applyForJob = async (req, res) => {
 
     console.log('📄 Resume processed:', resumePath);
 
-    // 🔥 OPTIMIZATION: Run database operations in parallel where possible
+    // Run database operations in parallel where possible
     const [job, existingApplication, candidate] = await Promise.all([
       Job.findById(jobId),
       Application.findOne({ candidate: req.user.id, job: jobId }),
@@ -71,7 +71,7 @@ export const applyForJob = async (req, res) => {
       coverLetter
     });
 
-    // 🔥 OPTIMIZATION: Don't wait for these to complete
+    // Don't wait for these to complete
     Promise.all([
       job.incrementApplication(),
       (async () => {

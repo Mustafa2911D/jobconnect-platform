@@ -23,7 +23,7 @@ class SocketService {
     credentials: true,
     allowedHeaders: ["Authorization", "Content-Type", "X-Requested-With"]
   },
-  transports: ['websocket', 'polling'], // 🔥 ADD THIS
+  transports: ['websocket', 'polling'], 
   connectionStateRecovery: {
     maxDisconnectionDuration: 2 * 60 * 1000,
     skipMiddlewares: true

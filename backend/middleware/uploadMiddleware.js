@@ -9,7 +9,6 @@ const __dirname = path.dirname(__filename);
 // ===== DIRECTORY SETUP =====
 const ensureUploadDirs = () => {
   if (process.env.NODE_ENV === 'production') {
-    // Create directories in /tmp for production
     const tmpUploadsDir = '/tmp/uploads';
     const tmpProfileImagesDir = '/tmp/uploads/profile-images';
     
@@ -100,7 +99,7 @@ const upload = multer({
   storage: storage,
   fileFilter: fileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB
+    fileSize: 5 * 1024 * 1024 
   }
 });
 
@@ -108,7 +107,7 @@ const uploadProfileImage = multer({
   storage: storage,
   fileFilter: imageFileFilter,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB
+    fileSize: 5 * 1024 * 1024 
   }
 });
 

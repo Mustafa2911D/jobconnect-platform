@@ -813,7 +813,6 @@ const Header = () => {
                     )}
                   </Link>
 
-                  {/* 🔥 ADD: Saved Jobs for Candidate in Mobile Menu */}
                   {user?.role === 'candidate' && (
                     <Link
                       to="/saved-jobs"
@@ -825,7 +824,6 @@ const Header = () => {
                     </Link>
                   )}
 
-                  {/* 🔥 ADD: Saved Profiles for Employer in Mobile Menu */}
                   {user?.role === 'employer' && (
                     <Link
                       to="/saved-profiles"

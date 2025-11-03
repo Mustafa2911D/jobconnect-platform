@@ -426,7 +426,7 @@ export const deleteAccount = async (req, res) => {
       company: employer.company
     });
 
-    // FIX: Correct password verification
+    // Correct password verification
     const isPasswordCorrect = await employer.correctPassword(password);
     console.log('Employer password verification result:', isPasswordCorrect);
     

@@ -201,7 +201,7 @@ const EmployerPublicProfile = () => {
           ))}
         </div>
 
-        {/* Tab Content with Animation */}
+        {/* Tab Content */}
         <div className="space-y-8">
           <div className="transition-all duration-500 ease-in-out">
             {activeTab === 'overview' && (
@@ -401,7 +401,7 @@ const EmployerPublicProfile = () => {
         </div>
       </div>
 
-      {/* Add custom animation styles */}
+      {/* Animation styles */}
       <style>{`
         @keyframes fadeIn {
           from { opacity: 0; transform: translateY(20px); }

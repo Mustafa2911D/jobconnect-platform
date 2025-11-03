@@ -27,7 +27,6 @@ export default defineConfig({
       }
     }
   },
-  // 🔥 FIX: Proper environment variable handling
   define: {
     'process.env': process.env
   },

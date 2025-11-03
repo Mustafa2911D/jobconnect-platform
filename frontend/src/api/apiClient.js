@@ -9,13 +9,13 @@ export const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000, // Reduced from 60000 to 30000ms (30 seconds)
+  timeout: 30000, 
   withCredentials: true 
 });
 
 export const uploadClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 30000, // 30 seconds for uploads
+  timeout: 30000, 
   withCredentials: true,
   headers: {
     'Content-Type': 'multipart/form-data',
@@ -33,7 +33,7 @@ apiClient.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
     
-    // Add cache busting for GET requests to avoid stale data
+    // Cache busting for GET requests 
     if (config.method === 'get') {
       config.params = {
         ...config.params,
@@ -55,7 +55,6 @@ apiClient.interceptors.response.use(
     const originalRequest = error.config;
     
     if (error.response?.status === 429) {
-      // Rate limit handling
       const retryCount = rateLimitRetries.get(originalRequest.url) || 0;
       if (retryCount < 3) {
         rateLimitRetries.set(originalRequest.url, retryCount + 1);
@@ -66,7 +65,6 @@ apiClient.interceptors.response.use(
     }
     
     if (error.response?.status === 401) {
-      // Token expired or invalid
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       window.location.href = '/login';
@@ -80,7 +78,7 @@ apiClient.interceptors.response.use(
       });
     }
     
-    // Enhanced error logging
+    // Error logging
     if (error.response) {
       console.error('API Error Response:', {
         status: error.response.status,
@@ -103,12 +101,10 @@ export const getImageUrl = (imagePath) => {
     return null;
   }
   
-  // If it's already a full URL, return as-is
   if (imagePath.startsWith('http')) {
     return imagePath;
   }
   
-  // 🔥 FIX: Use environment variable with proper fallback
   const baseUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '') || 'https://jobconnect-backend-yyho.onrender.com';
   
   // Handle different image path formats
@@ -334,4 +330,4 @@ export const messagesAPI = {
   getAvailableUsers: () => apiClient.get('/messages/users'),
   searchUsers: (query) => apiClient.get(`/messages/users?search=${encodeURIComponent(query)}`),
   getUsers: () => apiClient.get('/messages/users')
-};// Force redeploy: Remove localhost image URLs Sun, Nov  2, 2025 10:49:31 AM
+};

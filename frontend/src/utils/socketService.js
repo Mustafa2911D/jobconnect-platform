@@ -25,7 +25,7 @@ class SocketService {
         return;
       }
 
-      // Disconnect existing connection if any
+      // Disconnect existing connection 
       if (this.socket) {
         this.disconnect();
       }
@@ -37,8 +37,7 @@ class SocketService {
 
       this.connectionAttempts++;
       console.log(`🔄 Attempting WebSocket connection (attempt ${this.connectionAttempts})...`);
-      
-      // 🔥 FIX: Use proper WebSocket URL from environment
+  
       const wsUrl = import.meta.env.VITE_API_BASE_URL?.replace('/api', '').replace('http', 'ws') || 'wss://jobconnect-backend-yyho.onrender.com';
       
       this.socket = io(wsUrl, {
@@ -50,7 +49,7 @@ class SocketService {
         reconnectionAttempts: 3,
         reconnectionDelay: 1000,
         autoConnect: true,
-        withCredentials: true // 🔥 ADD THIS
+        withCredentials: true 
       });
 
       this.setupEventListeners();
@@ -77,7 +76,7 @@ class SocketService {
     this.socket.on('connect', () => {
       console.log('🟢 WebSocket connected successfully');
       this.isConnected = true;
-      this.connectionAttempts = 0; // Reset on successful connection
+      this.connectionAttempts = 0; 
     });
 
     this.socket.on('disconnect', (reason) => {
